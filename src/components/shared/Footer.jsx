@@ -33,25 +33,16 @@ export const Footer = () => {
             <h1 className="text-xl font-semibold mb-4">Exclusive</h1>
             <h2 className="text-lg font-medium mb-3">Subscribe</h2>
             <p className="text-gray-300 mb-4">Get 10% off your first order</p>
-            <div className="flex">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-transparent border-gray-600 text-white placeholder:text-gray-400 rounded-r-none"
-              />
-              <Button className="bg-transparent border border-gray-600 border-l-0 rounded-l-none hover:bg-gray-700">
-                →
-              </Button>
-            </div>
+           
           </div>
 
           {/* Support Section */}
           <div>
             <h2 className="text-xl font-semibold mb-4">Support</h2>
             <div className="space-y-2 text-gray-300">
-              <p>111 Mohakhali, Dhaka,</p>
-              <p>DH 1515, Bangladesh.</p>
-              <p>bdcalling@gmail.com</p>
+              <p>Your Location, state , country,</p>
+              <p> your zip code.</p>
+              <p>yourGmail@gmail.com</p>
               <p>+88015-88888-9999</p>
             </div>
           </div>
@@ -95,16 +86,7 @@ export const Footer = () => {
 
             <div className="flex gap-3 mb-4">
               {/* QR Code Placeholder */}
-              <div className="w-20 h-20 bg-white rounded flex items-center justify-center">
-                <div className="w-16 h-16 bg-black rounded grid grid-cols-4 gap-px p-1">
-                  {Array.from({ length: 16 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className={`${Math.random() > 0.5 ? "bg-white" : "bg-black"} rounded-sm`}
-                    />
-                  ))}
-                </div>
-              </div>
+         
 
               
             </div>
