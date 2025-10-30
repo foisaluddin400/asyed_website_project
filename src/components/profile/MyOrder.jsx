@@ -2,12 +2,34 @@
 
 import React from "react";
 import Image from "next/image";
-import { useGetMyOrderQuery } from "@/redux/Api/metaApi";
+import { useAddReOrderCheckoutMutation, useGetMyOrderQuery } from "@/redux/Api/metaApi";
 import { imageUrl } from "@/redux/Api/baseApi";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
+
 
 const MyOrder = () => {
   const { data: myOrderData, isLoading, isError } = useGetMyOrderQuery();
+  const [rePayment, { isLoading: isRePaying }] = useAddReOrderCheckoutMutation();
+
+ 
+  const handleRePayment = async (orderId) => {
+    try {
+      const response = await rePayment({
+        id: orderId,
+        data: { status: "shipped" }, 
+      }).unwrap();
+
+      const paymentUrl = response.data.url;
+      if (paymentUrl) {
+       
+        window.location.href = paymentUrl;
+      }
+    } catch (error) {
+      console.error("Re-payment failed:", error);
+      toast.error("Payment failed. Please try again.");
+    }
+  };
 
   if (isLoading)
     return (
@@ -130,33 +152,27 @@ const MyOrder = () => {
 
                               {/* Sizes with Price */}
                               <div className="ml-7 space-y-1">
-                                {vq.sizeQuantities.map((sq) => {
-                                  const sizeObj = variant?.size.find(
-                                    (s) => s._id === sq.size
-                                  );
-
-                                  return (
-                                    <div
-                                      key={sq.size}
-                                      className="flex items-center justify-between text-xs"
-                                    >
-                                      <span className="bg-gray-100 px-2 py-0.5 rounded">
-                                        {sizeObj?.name || "N/A"}: <strong>{sq.quantity}</strong>
-                                      </span>
-                                      <span className="text-gray-600">
-                                        ৳{sq.price} × {sq.quantity} ={" "}
-                                        <strong className="text-gray-900">৳{sq.sizeTotal}</strong>
-                                      </span>
-                                    </div>
-                                  );
-                                })}
+                                {vq.sizeQuantities.map((sq) => (
+                                  <div
+                                    key={sq.size._id}
+                                    className="flex items-center justify-between text-xs"
+                                  >
+                                    <span className="bg-gray-100 px-2 py-0.5 rounded">
+                                      {sq.size.name}: <strong>{sq.quantity}</strong>
+                                    </span>
+                                    <span className="text-gray-600">
+                                      {sq.price} × {sq.quantity} ={" "}
+                                      <strong className="text-gray-900">{sq.sizeTotal}</strong>
+                                    </span>
+                                  </div>
+                                ))}
                               </div>
 
                               {/* Variant Total */}
                               <div className="flex justify-end mt-2">
                                 <p className="text-sm font-medium text-gray-700">
                                   Variant Total:{" "}
-                                  <span className="text-primary font-bold">৳{vq.variantTotal}</span>
+                                  <span className="text-primary font-bold">{vq.variantTotal}</span>
                                 </p>
                               </div>
                             </div>
@@ -169,7 +185,7 @@ const MyOrder = () => {
                         <p className="text-sm font-medium text-gray-700">
                           Item Total:{" "}
                           <span className="text-lg font-bold text-primary">
-                            ৳{item.itemTotal}
+                            {item.itemTotal}
                           </span>
                         </p>
                       </div>
@@ -181,7 +197,7 @@ const MyOrder = () => {
 
             {/* Order Footer */}
             <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center gap-4">
                 <div>
                   <p className="text-sm text-gray-600">
                     Delivery to:{" "}
@@ -190,9 +206,27 @@ const MyOrder = () => {
                     </span>
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600">Order Total</p>
-                  <p className="text-2xl font-bold text-primary">৳{order.total}</p>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600">Order Total</p>
+                    <p className="text-2xl font-bold text-primary">{order.total}</p>
+                  </div>
+
+                  {/* Re Payment Button */}
+                  {order.paymentStatus === "pending" && (
+                    <button
+                      onClick={() => handleRePayment(order._id)}
+                      disabled={isRePaying}
+                      className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
+                        isRePaying
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-primary text-white hover:bg-primary/90"
+                      }`}
+                    >
+                      {isRePaying ? "Processing..." : "Re Payment"}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

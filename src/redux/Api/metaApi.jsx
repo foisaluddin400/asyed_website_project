@@ -145,6 +145,16 @@ const meta = baseApi.injectEndpoints({
   invalidatesTags: ["updateProfile"],
 }),
 
+    addReOrderCheckout: builder.mutation({
+      query: ({data,id}) => {
+        return {
+          url: `/orders/${id}/retry-payment`,
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
 getMyOrder: builder.query({
       query: () => {
         return {
@@ -326,5 +336,6 @@ export const {
   useUpdateAddressMutation,
   useAddOrderCheckoutMutation,
   useGetMyOrderQuery,
-  useGetMyReviewQuery
+  useGetMyReviewQuery,
+  useAddReOrderCheckoutMutation
 } = meta;
