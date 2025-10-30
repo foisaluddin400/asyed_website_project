@@ -269,16 +269,17 @@ export default function SaveDesign() {
             </div>
 
             <div className="text-center mb-6">
-              <p className="text-sm text-gray-500">
-                By clicking 'Save Design', I agree to the{" "}
-                <a href="#" className="text-gray-700 hover:underline">
-                  terms of service
-                </a>{" "}
-                and{" "}
-                <a href="#" className="text-gray-700 hover:underline">
-                  Privacy Policy
-                </a>
-              </p>
+             <p className="text-sm text-gray-500">
+  By clicking &apos;Save Design&apos;, I agree to the{" "}
+  <a href="#" className="text-gray-700 hover:underline">
+    terms of service
+  </a>{" "}
+  and{" "}
+  <a href="#" className="text-gray-700 hover:underline">
+    Privacy Policy
+  </a>
+</p>
+
             </div>
 
             <div>

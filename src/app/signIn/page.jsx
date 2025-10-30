@@ -1,10 +1,12 @@
 import Login from '@/components/authentication/Login'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const page = () => {
   return (
     <div>
-      <Login></Login>
+       <Suspense fallback={<p>loading..</p>}>
+        <Login></Login>
+      </Suspense>
     </div>
   )
 }

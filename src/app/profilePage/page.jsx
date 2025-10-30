@@ -1,11 +1,13 @@
 import { ProfilePage } from '@/components/profile/ProfilePage'
-import ProtectedRoute from '@/protectedRoute'
-import React from 'react'
+
+import React, { Suspense } from 'react'
 
 const page = () => {
   return (
     <>
-      <ProfilePage></ProfilePage>
+       <Suspense fallback={<p>loading..</p>}>
+        <ProfilePage></ProfilePage>
+      </Suspense>
     </>
   )
 }

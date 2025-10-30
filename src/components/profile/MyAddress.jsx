@@ -122,9 +122,10 @@ const MyAddress = () => {
       {/* Address List */}
       <div className="space-y-4 mb-8">
         {addresses.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <p>No addresses yet. Click "Add Address" to get started.</p>
-          </div>
+        <div className="text-center py-12 text-gray-500">
+  <p>No addresses yet. Click &quot;Add Address&quot; to get started.</p>
+</div>
+
         ) : (
           addresses.map((addr) => (
             <div

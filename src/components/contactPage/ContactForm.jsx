@@ -36,10 +36,11 @@ const onFinish = async (values) => {
   return (
     <div>
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contact Form</h2>
-      <p className="text-gray-600 mb-8">
-        We'd love to hear from you! Whether it's a question, feedback, or just a
-        hello — drop us a message.
-      </p>
+     <p className="text-gray-600 mb-8">
+  We&apos;d love to hear from you! Whether it&apos;s a question, feedback, or just a
+  hello — drop us a message.
+</p>
+
 
       <Form
         form={form}
