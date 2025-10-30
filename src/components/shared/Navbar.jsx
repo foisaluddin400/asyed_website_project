@@ -51,7 +51,7 @@ console.log(token)
     { label: "Custom Apparel", path: "/allProduct", children: [] },
     { label: "My Product", path: "/my_product" },
     { label: "Recent Design", path: "/my-recent-design" },
-    { label: "Order", path: "/allProduct", badge: 2 },
+  
     { label: "About", path: "/about" },
     { label: "Contact", path: "/contactUs" },
     { label: "Blog", path: "/blog" },
