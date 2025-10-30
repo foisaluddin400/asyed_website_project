@@ -43,7 +43,7 @@ export const Footer = () => {
               <p>Your Location, state , country,</p>
               <p> your zip code.</p>
               <p>yourGmail@gmail.com</p>
-              <p>+88015-88888-9999</p>
+              <p>Your Number</p>
             </div>
           </div>
 
@@ -82,14 +82,7 @@ export const Footer = () => {
           {/* Download App Section */}
           <div>
             <h2 className="text-xl font-semibold mb-4">Download App</h2>
-            <p className="text-sm text-gray-300 mb-4">Save $3 with App New User Only</p>
-
-            <div className="flex gap-3 mb-4">
-              {/* QR Code Placeholder */}
-         
-
-              
-            </div>
+          
 
             {/* Social Media Icons */}
             <div className="flex gap-4">
