@@ -1,5 +1,5 @@
 import Cart from "@/components/cartPage/Cart";
-import ProtectedRoute from "@/protectedRoute";
+
 import React, { Suspense } from "react";
 
 const page = () => {
