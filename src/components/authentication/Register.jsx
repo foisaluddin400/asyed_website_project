@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
 import { useRegisterLoginMutation } from "@/redux/Api/userApi";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const [form] = Form.useForm();
@@ -24,32 +25,19 @@ const SignUp = () => {
       email: values.email,
       password: values.password,
     };
-
+const email = values.email
     try {
       const payload = await registerLogin(data).unwrap();
       if (payload) {
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: payload?.message || "Account created successfully",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-        router.push("/signIn"); 
+       toast.success(payload?.message)
+        localStorage.setItem("email", email);
+        router.push("/signUp/accountverify"); 
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: payload?.message || "Something went wrong",
-        });
+      toast.error(payload?.message)
       }
     } catch (error) {
       console.error("SignUp error:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error?.data?.message || "Server is down",
-      });
+    toast.error(error?.data?.message)
     }
   };
 

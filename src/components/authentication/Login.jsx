@@ -1,18 +1,20 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
-import { Form, Input, Button, Checkbox, message } from "antd";
+import { Form, Input, Button, Checkbox, message, Spin } from "antd";
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setToken } from "@/redux/features/auth/authSlice";
 import { useLoginAdminMutation } from "@/redux/Api/userApi";
-import Swal from "sweetalert2";
+
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [form] = Form.useForm();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [loginUser] = useLoginAdminMutation();
   const [showPassword, setShowPassword] = useState(false);
@@ -28,15 +30,14 @@ const Login = () => {
 
   const onFinish = async (values) => {
     const { email, password, remember } = values;
-
+setLoading(true)
     try {
       const payload = await loginUser({ email, password }).unwrap();
 
       if (payload?.data?.accessToken) {
         // Save token
-    dispatch(setToken(payload?.data?.accessToken));
+        dispatch(setToken(payload?.data?.accessToken));
 
-        // Save credentials only if "Remember me" is checked
         if (remember) {
           localStorage.setItem(
             "rememberedCredentials",
@@ -46,23 +47,14 @@ const Login = () => {
           localStorage.removeItem("rememberedCredentials");
         }
 
-        await Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: payload?.message || "Logged in successfully",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-
+        toast.success(payload?.message);
+setLoading(false)
         router.push("/");
       }
     } catch (error) {
       console.error("Login error:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error?.data?.message || "Server is down",
-      });
+setLoading(false)
+      toast.error(error?.data?.message);
     }
   };
 
@@ -122,10 +114,22 @@ const Login = () => {
           {/* Continue Button */}
           <Form.Item>
             <button
+              className={`w-full py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
+                loading
+                  ? "bg-red-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-blue-500"
+              }`}
               type="submit"
-              className="w-full bg-primary py-3 text-white rounded-md hover:bg-primary-dark transition-colors"
+              disabled={loading}
             >
-              Continue
+              {loading ? (
+                <>
+                  <Spin size="small" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                "Log In"
+              )}
             </button>
           </Form.Item>
         </Form>

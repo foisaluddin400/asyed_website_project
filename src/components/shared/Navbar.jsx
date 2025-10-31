@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -39,10 +39,10 @@ export const Navbar = () => {
 
   // Check login from localStorage
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-const token = useSelector((state) => state.logInUser?.token);
-console.log(token)
+  console.log(isLoggedIn);
+  const token = useSelector((state) => state.logInUser?.token);
+  console.log(token);
   useEffect(() => {
-
     setIsLoggedIn(!!token);
   }, []);
 
@@ -51,7 +51,7 @@ console.log(token)
     { label: "Custom Apparel", path: "/allProduct", children: [] },
     { label: "My Product", path: "/my_product" },
     { label: "Recent Design", path: "/my-recent-design" },
-  
+
     { label: "About", path: "/about" },
     { label: "Contact", path: "/contactUs" },
     { label: "Blog", path: "/blog" },
@@ -158,7 +158,7 @@ console.log(token)
       <div className="bg-primary border-b border-gray-400 text-white py-3 hidden md:block">
         <div className="container mx-auto flex justify-between items-center text-sm">
           <span>Welcome to Shop Name online eCommerce store.</span>
-          <div className ="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <span>Follow us:</span>
             <FaTwitter />
             <SiFacebook />
@@ -200,7 +200,9 @@ console.log(token)
                     e.preventDefault();
                     const query = e.target.elements.searchInput.value.trim();
                     if (query) {
-                      router.push(`/allProduct?search=${encodeURIComponent(query)}`);
+                      router.push(
+                        `/allProduct?search=${encodeURIComponent(query)}`
+                      );
                     }
                   }}
                 >
@@ -220,53 +222,55 @@ console.log(token)
             {/* Auth Buttons – WITH POPCONFIRM */}
             <div className="hidden md:block">
               <div className="flex  items-center gap-3">
-              {isLoggedIn ? (
-                <Popconfirm
-                  title="Are you sure you want to log out?"
-                  okText="Yes"
-                  cancelText="No"
-                  okType="danger"
-                  onConfirm={handleLogout}
-                >
-                  <button className="bg-gradient-to-r  from-indigo-200 via-blue-400 to-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2">
-                    <LogOut className="w-4 h-4" />
-                    Log Out
-                  </button>
-                </Popconfirm>
-              ) : (
-                <>
-                  <Link
-                    href="/signUp"
-                    className=" border text-white px-4 py-2 rounded-md"
+                {isLoggedIn ? (
+                  <Popconfirm
+                    title="Are you sure you want to log out?"
+                    okText="Yes"
+                    cancelText="No"
+                    okType="danger"
+                    onConfirm={handleLogout}
                   >
-                    Sign Up
-                  </Link>
-                  <Link
-                    href="/signIn"
-                    className=" bg-gradient-to-r from-indigo-200 via-blue-400 to-blue-700 text-white px-4 py-2 rounded-md"
-                  >
-                    Log In
-                  </Link>
-                </>
-              )}
-            </div>
+                    <button className="bg-gradient-to-r  from-indigo-200 via-blue-400 to-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2">
+                      <LogOut className="w-4 h-4" />
+                      Log Out
+                    </button>
+                  </Popconfirm>
+                ) : (
+                  <>
+                    <Link
+                      href="/signUp"
+                      className=" border text-white px-4 py-2 rounded-md"
+                    >
+                      Sign Up
+                    </Link>
+                    <Link
+                      href="/signIn"
+                      className=" bg-gradient-to-r from-indigo-200 via-blue-400 to-blue-700 text-white px-4 py-2 rounded-md"
+                    >
+                      Log In
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Cart + Profile (Mobile) */}
             <div className="block lg:hidden">
-              <div className="flex gap-3">
-                <Link href="/cart">
-                  <div className="relative cursor-pointer">
-                    <ShoppingCart className="w-6 h-6 text-white" />
-                    <span className="absolute -top-2 -right-2 bg-white text-black text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full">
-                      {cartData?.data?.items?.length || 0}
-                    </span>
-                  </div>
-                </Link>
-                <Link href="/profilePage">
-                  <User className="w-6 h-6 text-white cursor-pointer" />
-                </Link>
-              </div>
+              {isLoggedIn && (
+                <div className="flex gap-3">
+                  <Link href="/cart">
+                    <div className="relative cursor-pointer">
+                      <ShoppingCart className="w-6 h-6 text-white" />
+                      <span className="absolute -top-2 -right-2 bg-white text-black text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full">
+                        {cartData?.data?.items?.length || 0}
+                      </span>
+                    </div>
+                  </Link>
+                  <Link href="/profilePage">
+                    <User className="w-6 h-6 text-white cursor-pointer" />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -310,19 +314,21 @@ console.log(token)
 
               {/* Cart + Profile (Desktop) */}
               <div className="hidden lg:block">
-                <div className="flex gap-3">
-                  <Link href="/cart">
-                    <div className="relative cursor-pointer">
-                      <ShoppingCart className="w-6 h-6 text-black" />
-                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full">
-                        {cartData?.data?.items?.length || 0}
-                      </span>
-                    </div>
-                  </Link>
-                  <Link href="/profilePage">
-                    <User className="w-6 h-6 text-black cursor-pointer" />
-                  </Link>
-                </div>
+                {isLoggedIn && (
+                  <div className="flex gap-3">
+                    <Link href="/cart">
+                      <div className="relative cursor-pointer">
+                        <ShoppingCart className="w-6 h-6 text-black" />
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full">
+                          {cartData?.data?.items?.length || 0}
+                        </span>
+                      </div>
+                    </Link>
+                    <Link href="/profilePage">
+                      <User className="w-6 h-6 text-black cursor-pointer" />
+                    </Link>
+                  </div>
+                )}
               </div>
             </nav>
           </div>
