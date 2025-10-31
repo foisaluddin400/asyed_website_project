@@ -5,11 +5,13 @@ import { useForgotPasswordMutation, useResendOtpMutation, useVerifyOtpMutation, 
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { Spin } from "antd";
 
 const VerifyRegister = () => {
   const router = useRouter();
   const inputRefs = useRef([]);
   const [verifyOtp] = useVerifyRegisterOtpMutation();
+   const [loading, setLoading] = useState(false);
   const [resend] = useResendOtpMutation();
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const email = localStorage.getItem("email");
@@ -35,7 +37,7 @@ const VerifyRegister = () => {
       toast.info('Please enter all 6 digits.')
       return;
     }
-
+setLoading(true)
     try {
       const res = await verifyOtp({ email, code: Number(code) }).unwrap();
 
@@ -43,7 +45,9 @@ const VerifyRegister = () => {
        toast.success(res?.message)
         router.push("/signIn");
       }
+      setLoading(false)
     } catch (error) {
+        setLoading(false)
      toast.error(error?.data?.message)
     }
   };
@@ -100,12 +104,24 @@ const VerifyRegister = () => {
             </button>
           </div>
 
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-orange-500 text-white font-semibold rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
-          >
-            Submit
-          </button>
+         <button
+              className={`w-full py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
+                loading
+                  ? "bg-red-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-blue-500"
+              }`}
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Spin size="small" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                "Submit"
+              )}
+            </button>
         </form>
       </div>
     </div>

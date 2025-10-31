@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Spin } from "antd";
 import { useRouter } from "next/navigation";
 import { useResetPasswordMutation } from "@/redux/Api/userApi";
 import Swal from "sweetalert2";
@@ -11,7 +11,7 @@ const NewPassword = () => {
   const [form] = Form.useForm();
   const router = useRouter();
   const [resetPass, { isLoading }] = useResetPasswordMutation();
-
+ const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -27,7 +27,7 @@ const NewPassword = () => {
       });
       return;
     }
-
+setLoading(true)
     try {
       const payload = await resetPass({
         newPassword:password,
@@ -38,9 +38,10 @@ const NewPassword = () => {
       localStorage.removeItem("resetToken"); 
 
     toast.success(payload?.message)
-
+setLoading(false)
       router.push("/signIn");
     } catch (error) {
+        setLoading(false)
       console.error("Reset password error:", error);
     toast.error(error?.data?.message)
     }
@@ -103,14 +104,24 @@ const NewPassword = () => {
 
           {/* Submit Button */}
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={isLoading}
-              className="w-full h-12 text-base font-medium bg-primary hover:bg-primary-dark"
+           <button
+              className={`w-full py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
+                loading
+                  ? "bg-red-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-blue-500"
+              }`}
+              type="submit"
+              disabled={loading}
             >
-              {isLoading ? "Updating..." : "Update Password"}
-            </Button>
+              {loading ? (
+                <>
+                  <Spin size="small" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                "Submit"
+              )}
+            </button>
           </Form.Item>
         </Form>
       </div>

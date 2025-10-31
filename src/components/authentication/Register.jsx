@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Spin } from "antd";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 const SignUp = () => {
   const [form] = Form.useForm();
   const router = useRouter();
+   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -26,16 +27,20 @@ const SignUp = () => {
       password: values.password,
     };
 const email = values.email
+setLoading(true)
     try {
       const payload = await registerLogin(data).unwrap();
       if (payload) {
        toast.success(payload?.message)
         localStorage.setItem("email", email);
         router.push("/signUp/accountverify"); 
+        setLoading(false)
       } else {
       toast.error(payload?.message)
+      setLoading(false)
       }
     } catch (error) {
+      setLoading(false)
       console.error("SignUp error:", error);
     toast.error(error?.data?.message)
     }
@@ -136,11 +141,23 @@ const email = values.email
           </Form.Item>
 
           <Form.Item>
-            <button
-              htmlType="submit"
-              className="w-full bg-primary py-3 text-white rounded-md hover:bg-primary-dark transition-colors"
+           <button
+              className={`w-full py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
+                loading
+                  ? "bg-red-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-blue-500"
+              }`}
+              type="submit"
+              disabled={loading}
             >
-              Continue
+              {loading ? (
+                <>
+                  <Spin size="small" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                "Register"
+              )}
             </button>
           </Form.Item>
         </Form>

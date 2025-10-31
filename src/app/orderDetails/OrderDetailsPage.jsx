@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { useGetCartQuery } from "@/redux/Api/productApi";
 import { imageUrl } from "@/redux/Api/baseApi";
 import { toast } from "react-toastify";
-import { useAddOrderCheckoutMutation, useGetAddressQuery } from "@/redux/Api/metaApi";
+import {
+  useAddOrderCheckoutMutation,
+  useGetAddressQuery,
+} from "@/redux/Api/metaApi";
 import { v4 as uuidv4 } from "uuid"; // npm i uuid
 import MyAddress from "@/components/profile/MyAddress";
 
@@ -13,7 +16,11 @@ const OrderDetails = () => {
   const router = useRouter();
 
   // ---------- CART ----------
-  const { data: cartData, isLoading: cartLoading, isError: cartError } = useGetCartQuery();
+  const {
+    data: cartData,
+    isLoading: cartLoading,
+    isError: cartError,
+  } = useGetCartQuery();
 
   // ---------- ADDRESS ----------
   const { data: addressResp, isLoading: addrLoading } = useGetAddressQuery();
@@ -32,7 +39,9 @@ const OrderDetails = () => {
   useEffect(() => {
     if (cartData?.data?.items && selectedColors.length === 0) {
       // শুধু isSelected: true আইটেমগুলো নিবে
-      const filteredItems = cartData.data.items.filter((item) => item.isSelected);
+      const filteredItems = cartData.data.items.filter(
+        (item) => item.isSelected
+      );
 
       const newSelectedColors = filteredItems.map((item) => ({
         itemId: item._id,
@@ -134,7 +143,8 @@ const OrderDetails = () => {
     return <p className="text-center py-6 text-red-500">Error loading cart</p>;
 
   // শুধু isSelected: true আইটেম থাকলে দেখাবে
-  const selectedItems = cartData?.data?.items?.filter((item) => item.isSelected) || [];
+  const selectedItems =
+    cartData?.data?.items?.filter((item) => item.isSelected) || [];
   if (!selectedItems.length)
     return <p className="text-center py-6">No selected items for checkout</p>;
 
@@ -158,7 +168,9 @@ const OrderDetails = () => {
 
           {/* Cart Items */}
           {selectedColors.map((item) => {
-            const cartItem = cartData.data.items.find((i) => i._id === item.itemId);
+            const cartItem = cartData.data.items.find(
+              (i) => i._id === item.itemId
+            );
             const leftImage =
               cartItem?.design !== null
                 ? cartItem?.variants[0]?.displayImages?.frontImage
@@ -187,10 +199,14 @@ const OrderDetails = () => {
                         <div className="flex items-center gap-3">
                           {/* Color */}
                           <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">Color:</span>
+                            <span className="text-sm text-gray-600">
+                              Color:
+                            </span>
                             <div
                               className="w-6 h-6 rounded-full border"
-                              style={{ backgroundColor: variant.color?.hexValue }}
+                              style={{
+                                backgroundColor: variant.color?.hexValue,
+                              }}
                             />
                           </div>
 
@@ -198,7 +214,9 @@ const OrderDetails = () => {
                           <div className="flex flex-wrap gap-2">
                             {variant.sizes.map((size) => (
                               <div key={size._id} className="text-center">
-                                <p className="text-xs text-gray-600">{size.name}</p>
+                                <p className="text-xs text-gray-600">
+                                  {size.name}
+                                </p>
                                 <input
                                   disabled
                                   type="number"
@@ -221,13 +239,15 @@ const OrderDetails = () => {
                           {/* Variant Subtotal */}
                           <div className="ml-auto text-sm">
                             $
-                            {(
-                              variant.sizes.reduce(
+                            {variant.sizes
+                              .reduce(
                                 (s, sz) =>
-                                  s + sz.quantity * cartItem.product.discountedPrice,
+                                  s +
+                                  sz.quantity *
+                                    cartItem.product.discountedPrice,
                                 0
                               )
-                            ).toFixed(2)}
+                              .toFixed(2)}
                           </div>
                         </div>
                       </div>
@@ -239,7 +259,10 @@ const OrderDetails = () => {
                         Qty: <strong>{totalQuantity}</strong>
                       </p>
                       <p>
-                        Total: <strong className="text-primary">${totalPrice.toFixed(2)}</strong>
+                        Total:{" "}
+                        <strong className="text-primary">
+                          ${totalPrice.toFixed(2)}
+                        </strong>
                       </p>
                     </div>
                   </div>
@@ -254,7 +277,10 @@ const OrderDetails = () => {
               Total Qty: <strong>{overallTotalQuantity}</strong>
             </p>
             <p>
-              Total Price: <strong className="text-primary">${overallTotalPrice.toFixed(2)}</strong>
+              Total Price:{" "}
+              <strong className="text-primary">
+                ${overallTotalPrice.toFixed(2)}
+              </strong>
             </p>
           </div>
 
@@ -276,11 +302,7 @@ const OrderDetails = () => {
         <div>
           <h2 className="text-xl font-semibold mb-4">Delivery Address</h2>
 
-          {addressData.length === 0 ? (
-            <p className="text-gray-500">No addresses found.</p>
-          ) : (
-           <MyAddress></MyAddress>
-          )}
+          <MyAddress></MyAddress>
         </div>
       </div>
     </div>

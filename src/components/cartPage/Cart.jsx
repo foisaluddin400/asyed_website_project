@@ -252,6 +252,7 @@ const Cart = () => {
                             <div key={size._id} className="text-center">
                               <p className="text-xs text-gray-600">{size.name}</p>
                               <input
+                              disabled
                                 type="number"
                                 min="0"
                                 value={size.quantity}

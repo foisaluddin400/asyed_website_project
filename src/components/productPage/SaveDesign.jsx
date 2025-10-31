@@ -93,9 +93,11 @@ export default function SaveDesign() {
       setLoading(false);
       console.log(response?.data?.data?._id);
       if (response?.data?.success) {
-        setLoading(false);
-        toast.success('Save Successfull')
+    
+        
         router.push(`/addToDesignCart/${response?.data?.data?._id}`);
+            setLoading(false);
+        toast.success("Save Successfull");
         setDesignName("");
       } else {
         setLoading(false);
@@ -111,7 +113,7 @@ export default function SaveDesign() {
   const placeholderImage = "https://via.placeholder.com/300x300?text=No+Design";
 
   return (
-    <div className="flex items-center justify-center p-4 min-h-screen">
+    <div className="flex items-center justify-center p-4 ">
       <div className="bg-white grid grid-cols-2 rounded-lg w-full max-w-4xl">
         {/* ======== Left Preview Section ======== */}
         <div className="p-4">
@@ -169,7 +171,7 @@ export default function SaveDesign() {
               </div>
             )}
 
-            {elementFrontPreview && (
+            {/* {elementFrontPreview && (
               <div className="border">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
                   Element Front Design
@@ -219,7 +221,7 @@ export default function SaveDesign() {
                   className="w-full object-cover"
                 />
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -269,17 +271,16 @@ export default function SaveDesign() {
             </div>
 
             <div className="text-center mb-6">
-             <p className="text-sm text-gray-500">
-  By clicking &apos;Save Design&apos;, I agree to the{" "}
-  <a href="#" className="text-gray-700 hover:underline">
-    terms of service
-  </a>{" "}
-  and{" "}
-  <a href="#" className="text-gray-700 hover:underline">
-    Privacy Policy
-  </a>
-</p>
-
+              <p className="text-sm text-gray-500">
+                By clicking &apos;Save Design&apos;, I agree to the{" "}
+                <a href="#" className="text-gray-700 hover:underline">
+                  terms of service
+                </a>{" "}
+                and{" "}
+                <a href="#" className="text-gray-700 hover:underline">
+                  Privacy Policy
+                </a>
+              </p>
             </div>
 
             <div>
@@ -295,10 +296,10 @@ export default function SaveDesign() {
                 {loading ? (
                   <>
                     <Spin size="small" />
-                    <span>Adding...</span>
+                    <span>Saving...</span>
                   </>
                 ) : (
-                  "Add To Cart"
+                  "Save Design"
                 )}
               </button>
             </div>

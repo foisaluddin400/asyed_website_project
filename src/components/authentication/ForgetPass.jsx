@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect } from "react";
-import { Form, Input } from "antd";
+import { useEffect, useState } from "react";
+import { Form, Input, Spin } from "antd";
 import { useForgotPasswordMutation } from "@/redux/Api/userApi";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 const ForgetPass = () => {
   const [form] = Form.useForm();
   const [forgetPass] = useForgotPasswordMutation();
+   const [loading, setLoading] = useState(false);
 const router = useRouter()
   // Load saved email on mount
   useEffect(() => {
@@ -21,7 +22,7 @@ const router = useRouter()
 
   const onFinish = async (values) => {
     const { email } = values;
-
+setLoading(true)
     try {
       const payload = await forgetPass({ email }).unwrap();
 
@@ -29,10 +30,12 @@ const router = useRouter()
       if (payload?.success) {
         localStorage.setItem("forgotEmail", email);
         toast.success("Password reset email sent successfully!");
+        setLoading(false)
         router.push('/signIn/verify')
       }
     } catch (error) {
       console.error("Forget Password error:", error);
+      setLoading(false)
       toast.error(error?.data?.message)
     }
   };
@@ -59,10 +62,22 @@ const router = useRouter()
           {/* Continue Button */}
           <Form.Item>
             <button
+              className={`w-full py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
+                loading
+                  ? "bg-red-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-blue-500"
+              }`}
               type="submit"
-              className="w-full bg-primary py-3 text-white rounded-md hover:bg-primary-dark transition-colors"
+              disabled={loading}
             >
-              Continue
+              {loading ? (
+                <>
+                  <Spin size="small" />
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                "Continue"
+              )}
             </button>
           </Form.Item>
         </Form>

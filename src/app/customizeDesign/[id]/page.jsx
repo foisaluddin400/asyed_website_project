@@ -12,9 +12,13 @@ import { saveDesigns } from "@/redux/store";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { CgFormatText } from "react-icons/cg";
+import { TfiPencilAlt } from "react-icons/tfi";
+
 import { useGetSingleProductQuery } from "@/redux/Api/productApi";
 import { imageUrl } from "@/redux/Api/baseApi";
 import { Popconfirm } from "antd";
+import { FaArtstation } from "react-icons/fa";
 
 // Load Google Fonts
 const loadGoogleFonts = () => {
@@ -1064,7 +1068,7 @@ export default function DesignPage() {
               : "bg-gray-100 text-gray-600"
           } ${isProductLoading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          <ImageIcon size={24} />
+          <CgFormatText size={24} />
         </button>
         <button
           disabled={isProductLoading}
@@ -1114,7 +1118,7 @@ export default function DesignPage() {
               : "bg-gray-100 text-gray-600"
           } ${isProductLoading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          <ImageIcon size={24} />
+          <FaArtstation size={24} />
         </button>
         <button
           disabled={isProductLoading}
@@ -1139,7 +1143,7 @@ export default function DesignPage() {
               : "bg-gray-100 text-gray-600"
           } ${isProductLoading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          <ImageIcon size={24} />
+          <TfiPencilAlt size={24} />
         </button>
       </div>
 

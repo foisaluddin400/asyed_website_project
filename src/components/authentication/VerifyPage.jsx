@@ -1,22 +1,27 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useForgotPasswordMutation, useVerifyOtpMutation } from "@/redux/Api/userApi";
+import {
+  useForgotPasswordMutation,
+  useVerifyOtpMutation,
+} from "@/redux/Api/userApi";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { Spin } from "antd";
 
 const Verify = () => {
   const router = useRouter();
   const inputRefs = useRef([]);
   const [verifyOtp] = useVerifyOtpMutation();
+  const [loading, setLoading] = useState(false);
   const [resend] = useForgotPasswordMutation();
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
-  const email = typeof window !== "undefined" ? localStorage.getItem("forgotEmail") : null;
+  const email =
+    typeof window !== "undefined" ? localStorage.getItem("forgotEmail") : null;
 
-  // Handle OTP input auto focus
   const handleInputChange = (e, index) => {
-    const value = e.target.value.replace(/[^0-9]/g, ""); // allow only numbers
+    const value = e.target.value.replace(/[^0-9]/g, "");
     const newOtp = [...otpValues];
     newOtp[index] = value;
     setOtpValues(newOtp);
@@ -32,34 +37,46 @@ const Verify = () => {
     const code = otpValues.join("");
 
     if (code.length !== 6) {
-    toast.info('Please enter all 6 digits.')
+      toast.info("Please enter all 6 digits.");
       return;
     }
+    setLoading(true);
 
     try {
       const res = await verifyOtp({ email, code: Number(code) }).unwrap();
 
       if (res?.success) {
-      toast.success(res?.message)
-          localStorage.setItem("resetToken", res?.data?.resetToken);
-        router.push("/signIn/newpass"); // redirect to new password page
+        toast.success(res?.message);
+        localStorage.setItem("resetToken", res?.data?.resetToken);
+        router.push("/signIn/newpass");
       }
+      setLoading(false);
     } catch (error) {
-      toast.error(error?.data?.message)
+      setLoading(false);
+      toast.error(error?.data?.message);
     }
   };
 
   // Resend code
   const handleResend = async () => {
     try {
-      if (!email) return Swal.fire("Error", "Email not found in local storage", "error");
+      if (!email)
+        return Swal.fire("Error", "Email not found in local storage", "error");
 
       const res = await resend({ email }).unwrap();
       if (res?.success) {
-        Swal.fire("Sent!", "A new verification code has been sent to your email.", "success");
+        Swal.fire(
+          "Sent!",
+          "A new verification code has been sent to your email.",
+          "success"
+        );
       }
     } catch (error) {
-      Swal.fire("Error", error?.data?.message || "Failed to resend code", "error");
+      Swal.fire(
+        "Error",
+        error?.data?.message || "Failed to resend code",
+        "error"
+      );
     }
   };
 
@@ -102,10 +119,22 @@ const Verify = () => {
           </div>
 
           <button
+            className={`w-full py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
+              loading
+                ? "bg-red-400 cursor-not-allowed"
+                : "bg-primary hover:bg-blue-500"
+            }`}
             type="submit"
-            className="w-full py-2 px-4 bg-orange-500 text-white font-semibold rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            disabled={loading}
           >
-            Submit
+            {loading ? (
+              <>
+                <Spin size="small" />
+                <span>Submitting...</span>
+              </>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       </div>
