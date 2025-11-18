@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { Form, Input, Button, Spin } from "antd";
@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 const SignUp = () => {
   const [form] = Form.useForm();
   const router = useRouter();
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -26,23 +26,23 @@ const SignUp = () => {
       email: values.email,
       password: values.password,
     };
-const email = values.email
-setLoading(true)
+    const email = values.email;
+    setLoading(true);
     try {
       const payload = await registerLogin(data).unwrap();
       if (payload) {
-       toast.success(payload?.message)
+        toast.success(payload?.message);
         localStorage.setItem("email", email);
-        router.push("/signUp/accountverify"); 
-        setLoading(false)
+        router.push("/signUp/accountverify");
+        setLoading(false);
       } else {
-      toast.error(payload?.message)
-      setLoading(false)
+        toast.error(payload?.message);
+        setLoading(false);
       }
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.error("SignUp error:", error);
-    toast.error(error?.data?.message)
+      toast.error(error?.data?.message);
     }
   };
 
@@ -63,7 +63,10 @@ setLoading(true)
               name="firstName"
               rules={[{ required: true, message: "Please Enter First Name!" }]}
             >
-              <Input style={{ height: "50px" }} placeholder="Enter First Name" />
+              <Input
+                style={{ height: "50px" }}
+                placeholder="Enter First Name"
+              />
             </Form.Item>
 
             <Form.Item
@@ -83,7 +86,10 @@ setLoading(true)
               { type: "email", message: "Enter a valid email!" },
             ]}
           >
-            <Input style={{ height: "50px" }} placeholder="Enter Email Address" />
+            <Input
+              style={{ height: "50px" }}
+              placeholder="Enter Email Address"
+            />
           </Form.Item>
 
           <Form.Item
@@ -141,7 +147,7 @@ setLoading(true)
           </Form.Item>
 
           <Form.Item>
-           <button
+            <button
               className={`w-full py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
                 loading
                   ? "bg-red-400 cursor-not-allowed"
@@ -164,9 +170,9 @@ setLoading(true)
 
         <p className="text-xs text-gray-600 mb-6 text-center">
           By Clicking Continue, I agree to the{" "}
-          <span className="text-blue-600 cursor-pointer">Terms of Service</span>{" "}
+          <Link href={'/terms-and-condition'}><span className="text-blue-600 cursor-pointer">Terms of Service</span></Link>{" "}
           and{" "}
-          <span className="text-blue-600 cursor-pointer">Privacy Policy</span>
+          <Link href={'/privacy-policy'}><span className="text-blue-600 cursor-pointer">Privacy Policy</span></Link>
         </p>
 
         <div className="flex items-center mb-6">

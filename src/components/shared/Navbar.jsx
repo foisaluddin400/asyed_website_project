@@ -139,7 +139,6 @@ export const Navbar = () => {
     return false;
   };
 
-  // LOGOUT with Popconfirm + localStorage cleanup
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
@@ -148,7 +147,7 @@ export const Navbar = () => {
     message.success("You have been logged out");
 
     setTimeout(() => {
-      window.location.href = "/signIn"; // 100% reliable redirect
+      window.location.href = "/signIn"; 
     }, 300);
   };
 
@@ -210,7 +209,7 @@ export const Navbar = () => {
                     type="text"
                     name="searchInput"
                     placeholder="Search for anything..."
-                    className="w-full pl-4 pr-12 py-2 border border-gray-300 focus:ring-2 focus:ring-red-500 rounded-md"
+                    className="w-full pl-4 pr-12 py-2 border border-gray-300 text-black focus:ring-2 focus:ring-red-500 rounded-md"
                   />
                   <button type="submit" className="absolute right-2 top-2">
                     <Search className="w-5 h-5 text-gray-600" />
@@ -369,7 +368,7 @@ export const Navbar = () => {
                 type="text"
                 name="searchInput"
                 placeholder="Search..."
-                className="w-full pl-4 pr-12 py-2 border border-gray-300 focus:ring-2 focus:ring-red-500 rounded-md"
+                className="w-full pl-4 pr-12 py-2 text-black border border-gray-300 focus:ring-2 focus:ring-red-500 rounded-md"
               />
               <button type="submit" className="absolute right-2 top-2">
                 <Search className="w-5 h-5 text-black" />
@@ -378,14 +377,11 @@ export const Navbar = () => {
           </form>
         </div>
 
-        {/* Menu Items */}
         <div className="flex flex-col space-y-2">
           {navItems.map((item, idx) => (
             <DrawerItem key={idx} item={item} />
           ))}
         </div>
-
-        {/* Auth in Drawer – WITH POPCONFIRM */}
         <div className="mt-6">
           {isLoggedIn ? (
             <Popconfirm
