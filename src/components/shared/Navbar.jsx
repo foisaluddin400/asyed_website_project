@@ -57,7 +57,7 @@ export const Navbar = () => {
     { label: "Blog", path: "/blog" },
   ];
 
-  // Mega Menu
+  // Mega Men
   const renderMegaMenu = () => {
     if (!category?.data?.length) return null;
     return (
