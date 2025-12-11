@@ -12,11 +12,13 @@ import ReviewDetails from "@/components/productPage/ReviewDetails";
 import { useGetSingleProductQuery } from "@/redux/Api/productApi";
 import { imageUrl } from "@/redux/Api/baseApi";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function ProductDetails() {
   const params = useParams();
-  const router = useRouter();
-
+const router = useRouter();
+const accessToken = useSelector((state) => state.logInUser?.token);
   const id = params?.id;
   const { data: singleProductData, isLoading, isError } = useGetSingleProductQuery({ id });
 console.log(id)
@@ -32,7 +34,14 @@ console.log(id)
   const product = singleProductData.data;
   const variants = product.variants || [];
   const selectedVariant = variants[selectedVariantIndex] || {};
-
+const handleStartDesigning = () => {
+  if (!accessToken) {
+    toast.info('Please sign in to start designing.');
+    router.push(`/signIn?redirect=${encodeURIComponent(window.location.pathname)}`);
+    return;
+  }
+  router.push(`/customizeDesign/${product?._id}`);
+};
   return (
     <div className="container mx-auto px-4 py-8">
       {/* 🧭 Breadcrumb */}
@@ -171,11 +180,12 @@ console.log(id)
           {/* 🚀 Buttons */}
           <div className="flex gap-4 mb-6">
              <Link href={`/addToCart/${product?._id}`}><button className="bg-primary hover:bg-red-600 text-white px-8 py-3 rounded font-medium">Add To Cart</button></Link>
-            <a href={`/customizeDesign/${product?._id}`}>
-              <button className="bg-primary hover:bg-red-600 text-white px-8 py-3 rounded font-medium">
-                START DESIGNING →
-              </button>
-            </a>
+          <button
+      onClick={handleStartDesigning}
+      className="bg-primary hover:bg-red-600 text-white px-8 py-3 rounded font-medium"
+    >
+      START DESIGNING →
+    </button>
            
           </div>
 

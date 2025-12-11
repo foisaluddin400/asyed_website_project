@@ -41,7 +41,7 @@ const blog = baseApi.injectEndpoints({
       },
       providesTags: ["updateProfile"],
     }),
-    
+
     getPopularProduct: builder.query({
       query: () => {
         return {
@@ -72,7 +72,7 @@ const blog = baseApi.injectEndpoints({
       providesTags: ["updateProfile"],
     }),
 
-     getSingleProductReview: builder.query({
+    getSingleProductReview: builder.query({
       query: ({ id }) => {
         return {
           url: `/review/product/${id}`,
@@ -112,7 +112,7 @@ const blog = baseApi.injectEndpoints({
       providesTags: ["updateProfile"],
     }),
 
-   getReletedProduct: builder.query({
+    getReletedProduct: builder.query({
       query: ({ id }) => {
         return {
           url: `/products/${id}/related`,
@@ -121,8 +121,6 @@ const blog = baseApi.injectEndpoints({
       },
       providesTags: ["updateProfile"],
     }),
-
-
 
     deleteDesign: builder.mutation({
       query: (id) => {
@@ -144,7 +142,7 @@ const blog = baseApi.injectEndpoints({
       },
       invalidatesTags: ["updateProfile"],
     }),
-  getSingleCart: builder.query({
+    getSingleCart: builder.query({
       query: ({ id }) => {
         return {
           url: `/carts/item/${id}`,
@@ -164,7 +162,6 @@ const blog = baseApi.injectEndpoints({
       },
       invalidatesTags: ["updateProfile"],
     }),
-
     getCart: builder.query({
       query: () => {
         return {
@@ -347,5 +344,5 @@ export const {
   useGetPopularProductQuery,
   useGetReletedProductQuery,
   useGetSingleCartQuery,
-  useGetSingleProductReviewQuery
+  useGetSingleProductReviewQuery,
 } = blog;

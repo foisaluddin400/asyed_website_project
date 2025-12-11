@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Form, Input, Button, Checkbox, message, Spin } from "antd";
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setToken } from "@/redux/features/auth/authSlice";
 import { useLoginAdminMutation } from "@/redux/Api/userApi";
@@ -14,12 +14,15 @@ import { toast } from "react-toastify";
 const Login = () => {
   const [form] = Form.useForm();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [loginUser] = useLoginAdminMutation();
   const [showPassword, setShowPassword] = useState(false);
-
+const redirectUrl = searchParams.get("redirect") || "/";
   // Load saved credentials on mount
+
+  
   useEffect(() => {
     const saved = localStorage.getItem("rememberedCredentials");
     if (saved) {
@@ -28,14 +31,13 @@ const Login = () => {
     }
   }, [form]);
 
-  const onFinish = async (values) => {
+ const onFinish = async (values) => {
     const { email, password, remember } = values;
-setLoading(true)
+    setLoading(true);
     try {
       const payload = await loginUser({ email, password }).unwrap();
 
       if (payload?.data?.accessToken) {
-        // Save token
         dispatch(setToken(payload?.data?.accessToken));
 
         if (remember) {
@@ -47,14 +49,16 @@ setLoading(true)
           localStorage.removeItem("rememberedCredentials");
         }
 
-        toast.success(payload?.message);
-setLoading(false)
-        router.push("/");
+        toast.success(payload?.message || "Login successful!");
+
+        
+        router.push(decodeURIComponent(redirectUrl));
       }
     } catch (error) {
       console.error("Login error:", error);
-setLoading(false)
-      toast.error(error?.data?.message);
+      toast.error(error?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 

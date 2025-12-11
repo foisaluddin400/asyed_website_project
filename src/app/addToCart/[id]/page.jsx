@@ -122,7 +122,7 @@ export default function AddToCart() {
     
     if (!accessToken) {
       toast.info('Please sign in to add items to your cart.');
-      router.push('/signIn');       
+        router.push(`/signIn?redirect=${encodeURIComponent(window.location.pathname)}`);      
       return;
     }
     const variantQuantities = selectedColors
