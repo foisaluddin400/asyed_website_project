@@ -5,7 +5,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "f46h4cb1-3001.asse.devtunnels.ms",
-        pathname: "/**", // সব path allow
+        pathname: "/**",
       },
       {
         protocol: "http",
@@ -16,6 +16,11 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "i.ibb.co",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "s3cmd5kk-3001.asse.devtunnels.ms",
         pathname: "/**",
       },
     ],
