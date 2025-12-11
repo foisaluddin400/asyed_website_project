@@ -2,7 +2,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://f46h4cb1-3001.asse.devtunnels.ms/api",
+  baseUrl: "https://s3cmd5kk-3001.asse.devtunnels.ms/api",
   prepareHeaders: (headers, { getState }) => {
     const token = getState().logInUser?.token;
     if (token) {
@@ -19,4 +19,4 @@ export const baseApi = createApi({
   endpoints: () => ({}),
 });
 
-export const imageUrl = "https://f46h4cb1-3001.asse.devtunnels.ms";
+export const imageUrl = "https://s3cmd5kk-3001.asse.devtunnels.ms";
