@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import * as fabric from "fabric";
@@ -199,9 +198,10 @@ export default function DesignPage() {
     isLoading: isProductLoading,
     error: productError,
   } = useGetSingleProductQuery({ id });
-  console.log("API State:", { singleProduct, isProductLoading, productError });
-  console.log(singleProduct);
+  
   const canvasRef = useRef(null);
+  const fabricCanvasRef = useRef(null); // Store the fabric canvas instance
+  const isInitializingRef = useRef(false); // Prevent multiple initializations
   const [canvas, setCanvas] = useState(null);
   const [activeObject, setActiveObject] = useState(null);
   const [selectedTool, setSelectedTool] = useState("text");
@@ -246,10 +246,8 @@ export default function DesignPage() {
       ? rightTshirtUrl
       : leftTshirtUrl;
 
-  // State to track if all required sides are designed and saved
   const [isAllSidesDesigned, setIsAllSidesDesigned] = useState(false);
 
-  // Check if all required sides have designs
   useEffect(() => {
     if (!singleProduct || isProductLoading) return;
 
@@ -264,11 +262,6 @@ export default function DesignPage() {
     );
 
     setIsAllSidesDesigned(allDesigned);
-    console.log("All sides designed check:", {
-      requiredSides,
-      allDesigned,
-      currentPreviews,
-    });
   }, [
     previews,
     selectedColorIndex,
@@ -278,197 +271,9 @@ export default function DesignPage() {
     hasLeftImage,
   ]);
 
-  const initializeCanvas = () => {
-    console.log(
-      "Attempting canvas initialization, DOM check:",
-      !!document.querySelector("canvas")
-    );
-    if (!canvasRef.current || !document.contains(canvasRef.current)) {
-      console.error("Canvas element not found in DOM");
-      return null;
-    }
-    try {
-      const canvasInstance = new fabric.Canvas(canvasRef.current, {
-        width: 700,
-        height: 700,
-        isDrawingMode: false,
-        backgroundColor: null,
-      });
-
-      if (!canvasInstance.getContext()) {
-        console.error("Canvas context initialization failed");
-        return null;
-      }
-      console.log("Canvas initialized:", canvasInstance);
-
-      loadGoogleFonts();
-      addTextToCanvas(canvasInstance, "Double click to edit");
-
-      canvasInstance.on("selection:created", handleSelection);
-      canvasInstance.on("selection:updated", handleSelection);
-      canvasInstance.on("selection:cleared", () => setActiveObject(null));
-      canvasInstance.on("path:created", (e) => {
-        const path = e.path;
-        addDeleteControl(path, canvasInstance);
-        canvasInstance.renderAll();
-      });
-
-      return canvasInstance;
-    } catch (error) {
-      console.error("Fabric.js initialization error:", error);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    console.log(
-      "Canvas ref at mount:",
-      canvasRef.current,
-      "DOM check:",
-      !!document.querySelector("canvas")
-    );
-    if (!canvas && canvasRef.current && document.contains(canvasRef.current)) {
-      const canvasInstance = initializeCanvas();
-      setCanvas(canvasInstance);
-    }
-
-    return () => {
-      if (
-        canvas &&
-        canvas.getContext() &&
-        !document.contains(canvasRef.current)
-      ) {
-        console.log("Disposing canvas on unmount");
-        canvas.dispose();
-        setCanvas(null);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!canvas || !canvas.getContext()) {
-      console.log(
-        "Starting canvas retry, canvas:",
-        !!canvas,
-        "context:",
-        canvas ? !!canvas.getContext() : false
-      );
-      let attempts = 0;
-      const maxAttempts = 10;
-      const baseDelay = 500;
-
-      const retryCanvas = () => {
-        attempts++;
-        console.log(
-          `Canvas retry attempt ${attempts}/${maxAttempts}, DOM check:`,
-          !!document.querySelector("canvas")
-        );
-        if (!canvasRef.current || !document.contains(canvasRef.current)) {
-          console.error("Canvas element not found during retry");
-          if (attempts < maxAttempts) {
-            setTimeout(retryCanvas, baseDelay * Math.pow(2, attempts));
-          } else {
-            console.error("Max canvas retry attempts reached");
-            toast.error(
-              "Failed to initialize canvas. Please refresh the page."
-            );
-          }
-          return;
-        }
-
-        const canvasInstance = initializeCanvas();
-        if (canvasInstance && canvasInstance.getContext()) {
-          setCanvas(canvasInstance);
-          console.log("Canvas retry successful:", canvasInstance);
-        } else {
-          console.error("Canvas retry failed: Context unavailable");
-          if (attempts < maxAttempts) {
-            setTimeout(retryCanvas, baseDelay * Math.pow(2, attempts));
-          } else {
-            console.error("Max canvas retry attempts reached");
-            toast.error(
-              "Failed to initialize canvas. Please refresh the page."
-            );
-          }
-        }
-      };
-
-      setTimeout(retryCanvas, baseDelay);
-    }
-  }, [canvas]);
-
-  useEffect(() => {
-    console.log("Design load effect triggered:", {
-      canvas: !!canvas,
-      context: canvas ? !!canvas.getContext() : false,
-      singleProduct: !!singleProduct,
-      isProductLoading,
-    });
-    if (!canvas || !canvas.getContext() || !singleProduct || isProductLoading) {
-      console.log("Skipping design load due to invalid state");
-      return;
-    }
-
-    const design = designs[selectedColorIndex]?.[currentSide];
-    console.log(
-      "Loading design for color:",
-      selectedColorIndex,
-      "side:",
-      currentSide,
-      "design exists:",
-      !!design
-    );
-    if (design) {
-      canvas.loadFromJSON(
-        design,
-        () => {
-          canvas.forEachObject((obj) => addDeleteControl(obj, canvas));
-          canvas.isDrawingMode = false;
-          canvas.renderAll();
-          console.log("Design loaded successfully");
-        },
-        (err) => {
-          console.error("Failed to load design:", err);
-          toast.error("Failed to load saved design.");
-        }
-      );
-    } else {
-      canvas.remove(...canvas.getObjects());
-      addTextToCanvas(canvas, "Double click to edit");
-      canvas.isDrawingMode = false;
-      canvas.renderAll();
-      console.log("Initialized empty canvas with default placeholders");
-    }
-  }, [
-    canvas,
-    currentSide,
-    selectedColorIndex,
-    singleProduct,
-    isProductLoading,
-  ]);
-
-  const handleSelection = (e) => {
-    const obj = e.selected ? e.selected[0] : null;
-    if (obj) {
-      setActiveObject(obj);
-      if (obj.type === "textbox") {
-        setSelectedTool("text");
-      } else if (obj.type === "image" || obj.type === "group") {
-        setSelectedTool("imageIcon");
-      } else if (obj.type === "path") {
-        setSelectedTool("drawing");
-      }
-    } else {
-      setActiveObject(null);
-    }
-    console.log("Selection changed:", obj ? obj.type : "none");
-  };
-
   const addDeleteControl = (object, canvasInstance) => {
-    if (!object || !canvasInstance.getContext()) {
-      console.error(
-        "Cannot add delete control: Invalid object or canvas context"
-      );
+    if (!object || !canvasInstance) {
+      console.error("Cannot add delete control: Invalid object or canvas");
       return;
     }
     object.controls.deleteControl = new fabric.Control({
@@ -502,6 +307,184 @@ export default function DesignPage() {
     });
   };
 
+  const addTextToCanvas = (canvasInstance, textString = "Double click to edit") => {
+    if (!canvasInstance) {
+      console.error("Cannot add text: Canvas not available");
+      toast.error("Cannot add text: Canvas not initialized.");
+      return;
+    }
+    const text = new fabric.Textbox(textString, {
+      left: 100,
+      top: 150,
+      fontSize: 24,
+      fill: "black",
+      fontWeight: "normal",
+      fontStyle: "normal",
+      fontFamily: "Arial",
+      editable: true,
+      stroke: "black",
+      strokeWidth: 0,
+      shadow: new fabric.Shadow({
+        color: "rgba(0,0,0,0)",
+        offsetX: 0,
+        offsetY: 0,
+        blur: 0,
+      }),
+    });
+
+    addDeleteControl(text, canvasInstance);
+    canvasInstance.add(text);
+    canvasInstance.setActiveObject(text);
+    canvasInstance.requestRenderAll();
+    setSelectedTool("text");
+    console.log("Text added to canvas:", textString);
+  };
+
+  const handleSelection = (e) => {
+    const obj = e.selected ? e.selected[0] : null;
+    if (obj) {
+      setActiveObject(obj);
+      if (obj.type === "textbox") {
+        setSelectedTool("text");
+      } else if (obj.type === "image" || obj.type === "group") {
+        setSelectedTool("imageIcon");
+      } else if (obj.type === "path") {
+        setSelectedTool("drawing");
+      }
+    } else {
+      setActiveObject(null);
+    }
+  };
+
+  const initializeCanvas = () => {
+    if (isInitializingRef.current) {
+      console.log("Canvas initialization already in progress");
+      return null;
+    }
+
+    if (!canvasRef.current) {
+      console.error("Canvas ref is null");
+      return null;
+    }
+
+    // Check if canvas element already has a fabric instance
+    if (canvasRef.current.__fabric) {
+      console.log("Canvas already has fabric instance, disposing first");
+      try {
+        const existingCanvas = canvasRef.current.__fabric;
+        existingCanvas.dispose();
+        delete canvasRef.current.__fabric;
+      } catch (error) {
+        console.error("Error disposing existing canvas:", error);
+      }
+    }
+
+    isInitializingRef.current = true;
+
+    try {
+      console.log("Initializing new fabric canvas");
+      const canvasInstance = new fabric.Canvas(canvasRef.current, {
+        width: 700,
+        height: 700,
+        isDrawingMode: false,
+        backgroundColor: null,
+      });
+
+      loadGoogleFonts();
+      addTextToCanvas(canvasInstance, "Double click to edit");
+
+      canvasInstance.on("selection:created", handleSelection);
+      canvasInstance.on("selection:updated", handleSelection);
+      canvasInstance.on("selection:cleared", () => setActiveObject(null));
+      canvasInstance.on("path:created", (e) => {
+        const path = e.path;
+        addDeleteControl(path, canvasInstance);
+        canvasInstance.renderAll();
+      });
+
+      fabricCanvasRef.current = canvasInstance;
+      isInitializingRef.current = false;
+      console.log("Canvas initialized successfully");
+      
+      return canvasInstance;
+    } catch (error) {
+      console.error("Fabric.js initialization error:", error);
+      isInitializingRef.current = false;
+      return null;
+    }
+  };
+
+  // Single initialization effect
+  useEffect(() => {
+    let timeoutId;
+    
+    const attemptInit = () => {
+      if (fabricCanvasRef.current) {
+        console.log("Canvas already initialized, skipping");
+        setCanvas(fabricCanvasRef.current);
+        return;
+      }
+
+      if (!canvasRef.current) {
+        console.log("Canvas ref not ready, will retry");
+        timeoutId = setTimeout(attemptInit, 100);
+        return;
+      }
+
+      const canvasInstance = initializeCanvas();
+      if (canvasInstance) {
+        setCanvas(canvasInstance);
+      } else {
+        console.log("Canvas initialization failed, retrying...");
+        timeoutId = setTimeout(attemptInit, 100);
+      }
+    };
+
+    // Start initialization after a small delay
+    timeoutId = setTimeout(attemptInit, 50);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (fabricCanvasRef.current) {
+        console.log("Disposing canvas on unmount");
+        try {
+          fabricCanvasRef.current.dispose();
+          fabricCanvasRef.current = null;
+        } catch (error) {
+          console.error("Error disposing canvas:", error);
+        }
+      }
+    };
+  }, []); // Only run once on mount
+
+  useEffect(() => {
+    if (!canvas || !singleProduct || isProductLoading) {
+      return;
+    }
+
+    const design = designs[selectedColorIndex]?.[currentSide];
+    if (design) {
+      canvas.loadFromJSON(
+        design,
+        () => {
+          canvas.forEachObject((obj) => addDeleteControl(obj, canvas));
+          canvas.isDrawingMode = false;
+          canvas.renderAll();
+          console.log("Design loaded successfully");
+        },
+        (err) => {
+          console.error("Failed to load design:", err);
+          toast.error("Failed to load saved design.");
+        }
+      );
+    } else {
+      canvas.remove(...canvas.getObjects());
+      addTextToCanvas(canvas, "Double click to edit");
+      canvas.isDrawingMode = false;
+      canvas.renderAll();
+    }
+  }, [canvas, currentSide, selectedColorIndex, singleProduct, isProductLoading]);
+
   const base64ToBlob = (base64Data) => {
     try {
       const byteString = atob(base64Data.split(",")[1]);
@@ -519,8 +502,8 @@ export default function DesignPage() {
   };
 
   const saveDesign = () => {
-    if (!canvas || !canvas.getContext()) {
-      console.error("Cannot save design: Canvas context unavailable");
+    if (!canvas) {
+      console.error("Cannot save design: Canvas not available");
       toast.error("Cannot save design: Canvas not initialized.");
       return;
     }
@@ -539,10 +522,8 @@ export default function DesignPage() {
         },
       }));
 
-      // Save design-only preview
       const designImageUrl = canvas.toDataURL({ format: "png", multiplier: 1 });
 
-      // Save composite preview with T-shirt
       const tempCanvas = document.createElement("canvas");
       tempCanvas.width = canvas.getWidth();
       tempCanvas.height = canvas.getHeight();
@@ -567,11 +548,6 @@ export default function DesignPage() {
         imgElement.src = activeImage;
 
         imgElement.onload = () => {
-          console.log("T-shirt image loaded:", {
-            src: imgElement.src,
-            width: imgElement.width,
-            height: imgElement.height,
-          });
           context.globalCompositeOperation = "destination-over";
           context.drawImage(
             imgElement,
@@ -584,73 +560,24 @@ export default function DesignPage() {
 
           const finalImageUrl = tempCanvas.toDataURL("image/png");
 
-          setPreviews((prev) => {
-            const newPreviews = {
-              ...prev,
-              [selectedColorIndex]: {
-                ...prev[selectedColorIndex],
-                [currentSide]: finalImageUrl,
-                [`element${
-                  currentSide.charAt(0).toUpperCase() + currentSide.slice(1)
-                }`]: designImageUrl,
-              },
-            };
-            console.log("Updated previews:", newPreviews);
-            return newPreviews;
-          });
+          setPreviews((prev) => ({
+            ...prev,
+            [selectedColorIndex]: {
+              ...prev[selectedColorIndex],
+              [currentSide]: finalImageUrl,
+              [`element${
+                currentSide.charAt(0).toUpperCase() + currentSide.slice(1)
+              }`]: designImageUrl,
+            },
+          }));
 
           toast.success("Design saved successfully!", { id: toastId });
-          console.log(
-            "Design saved for color:",
-            selectedColorIndex,
-            "side:",
-            currentSide,
-            "preview URL:",
-            finalImageUrl,
-            "design-only URL:",
-            designImageUrl
-          );
         };
 
         imgElement.onerror = (err) => {
           console.error("Failed to load T-shirt image:", activeImage, err);
           const fallbackImageUrl = canvas.toDataURL("image/png");
-          setPreviews((prev) => {
-            const newPreviews = {
-              ...prev,
-              [selectedColorIndex]: {
-                ...prev[selectedColorIndex],
-                [currentSide]: fallbackImageUrl,
-                [`element${
-                  currentSide.charAt(0).toUpperCase() + currentSide.slice(1)
-                }`]: designImageUrl,
-              },
-            };
-            console.log("Fallback previews:", newPreviews);
-            return newPreviews;
-          });
-          toast.warning(
-            "Saved design without T-shirt image due to image loading error.",
-            { id: toastId }
-          );
-          console.log(
-            "Fallback design saved for color:",
-            selectedColorIndex,
-            "side:",
-            currentSide,
-            "preview URL:",
-            fallbackImageUrl,
-            "design-only URL:",
-            designImageUrl
-          );
-        };
-      };
-
-      canvasImage.onerror = (err) => {
-        console.error("Failed to load canvas image for preview:", err);
-        const fallbackImageUrl = canvas.toDataURL("image/png");
-        setPreviews((prev) => {
-          const newPreviews = {
+          setPreviews((prev) => ({
             ...prev,
             [selectedColorIndex]: {
               ...prev[selectedColorIndex],
@@ -659,23 +586,30 @@ export default function DesignPage() {
                 currentSide.charAt(0).toUpperCase() + currentSide.slice(1)
               }`]: designImageUrl,
             },
-          };
-          console.log("Fallback previews:", newPreviews);
-          return newPreviews;
-        });
+          }));
+          toast.warning(
+            "Saved design without T-shirt image due to image loading error.",
+            { id: toastId }
+          );
+        };
+      };
+
+      canvasImage.onerror = (err) => {
+        console.error("Failed to load canvas image for preview:", err);
+        const fallbackImageUrl = canvas.toDataURL("image/png");
+        setPreviews((prev) => ({
+          ...prev,
+          [selectedColorIndex]: {
+            ...prev[selectedColorIndex],
+            [currentSide]: fallbackImageUrl,
+            [`element${
+              currentSide.charAt(0).toUpperCase() + currentSide.slice(1)
+            }`]: designImageUrl,
+          },
+        }));
         toast.warning(
           "Saved design without T-shirt image due to rendering error.",
           { id: toastId }
-        );
-        console.log(
-          "Fallback design saved for color:",
-          selectedColorIndex,
-          "side:",
-          currentSide,
-          "preview URL:",
-          fallbackImageUrl,
-          "design-only URL:",
-          designImageUrl
         );
       };
     } catch (err) {
@@ -685,111 +619,32 @@ export default function DesignPage() {
   };
 
   const switchSide = (newSide) => {
-    console.log("Switching side:", {
-      newSide,
-      currentSide,
-      canvas: !!canvas,
-      context: canvas ? !!canvas.getContext() : false,
-    });
-    if (newSide === currentSide) {
-      const design = designs[selectedColorIndex]?.[newSide];
-      if (design && canvas && canvas.getContext()) {
-        if (shouldLoad) {
-          canvas.loadFromJSON(
-            design,
-            () => {
-              canvas.forEachObject((obj) => addDeleteControl(obj, canvas));
-              canvas.isDrawingMode = false;
-              canvas.renderAll();
-              console.log("Loaded saved design for side:", newSide);
-            },
-            (err) => {
-              console.error("Failed to load design:", err);
-              toast.error("Failed to load saved design.");
-            }
-          );
-        }
-      }
-      return;
-    }
+    if (newSide === currentSide) return;
 
-    if (canvas && canvas.getContext()) {
+    if (canvas) {
       saveDesign();
     }
 
     setCurrentSide(newSide);
     setActiveObject(null);
     setSelectedTool("text");
-    console.log(
-      "Side switched to:",
-      newSide,
-      "with URL:",
-      newSide === "front"
-        ? frontTshirtUrl
-        : newSide === "back"
-        ? backTshirtUrl
-        : newSide === "right"
-        ? rightTshirtUrl
-        : leftTshirtUrl
-    );
   };
 
   const selectColor = (index) => {
-    console.log("Selecting color:", {
-      index,
-      current: selectedColorIndex,
-      canvas: !!canvas,
-      context: canvas ? !!canvas.getContext() : false,
-    });
     if (index === selectedColorIndex) return;
 
-    if (canvas && canvas.getContext()) {
+    if (canvas) {
       saveDesign();
     }
 
     setSelectedColorIndex(index);
     setActiveObject(null);
     setSelectedTool("text");
-    console.log("Color switched to index:", index);
-  };
-
-  const addTextToCanvas = (canvasInstance, textString = "New Text") => {
-    if (!canvasInstance || !canvasInstance.getContext()) {
-      console.error("Cannot add text: Canvas context unavailable");
-      toast.error("Cannot add text: Canvas not initialized.");
-      return;
-    }
-    const text = new fabric.Textbox(textString, {
-      left: 100,
-      top: 150,
-      fontSize: 24,
-      fill: "black",
-      fontWeight: "normal",
-      fontStyle: "normal",
-      fontFamily: "Arial",
-      editable: true,
-      stroke: "black",
-      strokeWidth: 0,
-      shadow: new fabric.Shadow({
-        color: "rgba(0,0,0,0)",
-        offsetX: 0,
-        offsetY: 0,
-        blur: 0,
-      }),
-    });
-
-    addDeleteControl(text, canvasInstance);
-
-    canvasInstance.add(text);
-    canvasInstance.setActiveObject(text);
-    canvasInstance.requestRenderAll();
-    setSelectedTool("text");
-    console.log("Text added to canvas:", textString);
   };
 
   const addImage = (e) => {
-    if (!canvas || !canvas.getContext()) {
-      console.error("Cannot add image: Canvas context unavailable");
+    if (!canvas) {
+      console.error("Cannot add image: Canvas not available");
       toast.error("Cannot add image: Canvas not initialized.");
       return;
     }
@@ -835,12 +690,10 @@ export default function DesignPage() {
         });
 
         addDeleteControl(img, canvas);
-
         canvas.add(img);
         canvas.setActiveObject(img);
         canvas.renderAll();
         setSelectedTool("image");
-        console.log("Uploaded image added to canvas:", file.name);
         toast.success("Image uploaded successfully!");
       };
 
@@ -863,19 +716,12 @@ export default function DesignPage() {
     isSvg,
     position = { left: 150, top: 150 }
   ) => {
-    if (!canvas || !canvas.getContext()) {
-      console.error("Cannot add image from URL: Canvas context unavailable");
+    if (!canvas) {
+      console.error("Cannot add image from URL: Canvas not available");
       toast.error("Cannot add image: Canvas not initialized.");
       return;
     }
-    console.log(
-      "Adding image from URL:",
-      imageUrl,
-      "isSvg:",
-      isSvg,
-      "position:",
-      position
-    );
+    
     if (isSvg) {
       fabric.loadSVGFromURL(
         imageUrl,
@@ -890,18 +736,14 @@ export default function DesignPage() {
           svgGroup._originalSvgUrl = imageUrl;
 
           addDeleteControl(svgGroup, canvas);
-
           canvas.add(svgGroup);
           canvas.setActiveObject(svgGroup);
           canvas.renderAll();
           setSelectedTool("imageIcon");
-          console.log("SVG added to canvas at position:", position);
         },
         (error) => {
           console.error("Failed to load SVG:", imageUrl, error);
-          toast.error(
-            "Failed to add SVG to canvas. Check console for details."
-          );
+          toast.error("Failed to add SVG to canvas.");
         }
       );
     } else {
@@ -917,17 +759,10 @@ export default function DesignPage() {
             });
 
             addDeleteControl(img, canvas);
-
             canvas.add(img);
             canvas.setActiveObject(img);
             canvas.renderAll();
             setSelectedTool("imageIcon");
-            console.log(
-              "Image added to canvas from URL:",
-              imageUrl,
-              "position:",
-              position
-            );
           } else {
             console.error("Failed to load image:", imageUrl);
             toast.error("Failed to load image from URL.");
@@ -945,8 +780,8 @@ export default function DesignPage() {
 
   const handleDrop = (e) => {
     e.preventDefault();
-    if (!canvas || !canvas.getContext()) {
-      console.error("Cannot drop: Canvas context unavailable");
+    if (!canvas) {
+      console.error("Cannot drop: Canvas not available");
       toast.error("Cannot drop icon: Canvas not initialized.");
       return;
     }
@@ -958,10 +793,6 @@ export default function DesignPage() {
         const dropX = e.clientX - rect.left;
         const dropY = e.clientY - rect.top;
         addImageFromUrl(data.dataUrl, true, { left: dropX, top: dropY });
-        console.log("Dropped SVG icon:", data.name, "at position:", {
-          left: dropX,
-          top: dropY,
-        });
       }
     } catch (err) {
       console.error("Failed to handle drop:", err);
@@ -970,8 +801,8 @@ export default function DesignPage() {
   };
 
   const handlePersistDesigns = () => {
-    if (!canvas || !canvas.getContext()) {
-      console.error("Cannot persist designs: Canvas context unavailable");
+    if (!canvas) {
+      console.error("Cannot persist designs: Canvas not available");
       toast.error("Cannot save order: Canvas not initialized.");
       return;
     }
@@ -1016,7 +847,6 @@ export default function DesignPage() {
       }
 
       dispatch(saveDesigns(designData));
-      console.log("Designs persisted to Redux:", designData);
       toast.success("Designs saved to persist!");
     }, 1000);
   };
@@ -1040,7 +870,6 @@ export default function DesignPage() {
       </div>
     );
   }
-
   return (
     <div className="flex bg-transparent">
       <div className="w-24 bg-gray-50 p-2 flex flex-col items-center gap-4 border-r">

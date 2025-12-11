@@ -29,8 +29,18 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
 
     let brush;
     if (brushType === "erase") {
-      brush = new fabric.EraserBrush(canvas);
-      brush.width = parseInt(drawingLineWidth, 10) || 1; // Use same line width for eraser
+      // Use PencilBrush with destination-out composite mode for erasing
+      brush = new fabric.PencilBrush(canvas);
+      brush.width = parseInt(drawingLineWidth, 10) || 1;
+      
+      // Set up eraser mode using canvas composite operation
+      const originalComposite = canvas.contextTop?.globalCompositeOperation;
+      if (canvas.contextTop) {
+        canvas.contextTop.globalCompositeOperation = 'destination-out';
+      }
+      
+      // Store original composite to restore later
+      brush._originalComposite = originalComposite;
     } else if (brushType === "hline") {
       brush = new fabric.PatternBrush(canvas);
       brush.getPatternSrc = function () {
@@ -99,6 +109,11 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
     if (brush) {
       canvas.freeDrawingBrush = brush;
       if (brushType !== "erase") {
+        // Restore normal composite operation
+        if (canvas.contextTop) {
+          canvas.contextTop.globalCompositeOperation = 'source-over';
+        }
+        
         canvas.freeDrawingBrush.color = drawingColor;
         canvas.freeDrawingBrush.shadow = new fabric.Shadow({
           blur: parseInt(drawingShadowWidth, 10) || 0,
@@ -117,16 +132,19 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
   const toggleDrawingMode = () => {
     if (!canvas || !canvas.getContext()) {
       console.error("Cannot toggle drawing mode: Canvas context unavailable");
-      toast.error("Canvas not initialized. Please wait or refresh.");
       return;
     }
     canvas.isDrawingMode = !canvas.isDrawingMode;
     setIsDrawingMode(canvas.isDrawingMode);
     if (!canvas.isDrawingMode) {
       setSelectedTool(null);
-      setDrawingBrushType("Pencil"); // Reset to Pencil when exiting drawing mode
+      setDrawingBrushType("Pencil");
+      // Restore normal composite operation when exiting drawing mode
+      if (canvas.contextTop) {
+        canvas.contextTop.globalCompositeOperation = 'source-over';
+      }
     } else {
-      setupBrush(drawingBrushType); // Reapply brush settings when entering drawing mode
+      setupBrush(drawingBrushType);
     }
     canvas.renderAll();
     console.log("Drawing mode:", canvas.isDrawingMode);
@@ -136,7 +154,6 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
   const clearCanvas = () => {
     if (!canvas || !canvas.getContext()) {
       console.error("Cannot clear canvas: Canvas context unavailable");
-      toast.error("Cannot clear canvas: Canvas not initialized.");
       return;
     }
     console.log("Clearing canvas");
@@ -144,27 +161,27 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
     canvas.isDrawingMode = false;
     setIsDrawingMode(false);
     setSelectedTool(null);
-    setDrawingBrushType("Pencil"); // Reset to Pencil after clearing
+    setDrawingBrushType("Pencil");
     canvas.renderAll();
   };
 
   if (selectedTool !== "drawing") return null;
 
   return (
-    <div className="absolute top-0 left-0 bg-white p-4 w-[350px] rounded flex flex-col gap-2">
+    <div className="absolute top-0 left-0 bg-white p-4 w-[350px] rounded flex flex-col gap-2 shadow-lg z-10">
       <p className="font-bold">Drawing Controls</p>
-      <button onClick={toggleDrawingMode} className="p-2 bg-gray-300 rounded">
+      <button onClick={toggleDrawingMode} className="p-2 bg-gray-300 rounded hover:bg-gray-400">
         {isDrawingMode ? "Cancel Drawing Mode" : "Enter Drawing Mode"}
       </button>
       <div>
-        <label>Brush Type:</label>
+        <label className="block text-sm font-medium">Brush Type:</label>
         <select
           value={drawingBrushType}
           onChange={(e) => {
             setDrawingBrushType(e.target.value);
             setupBrush(e.target.value);
           }}
-          className="border p-1 mt-1 w-full"
+          className="border p-1 mt-1 w-full rounded"
         >
           <option value="Pencil">Pencil</option>
           <option value="hline">Horizontal Line</option>
@@ -174,9 +191,9 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
           <option value="erase">Erase</option>
         </select>
       </div>
-      <div className="grid grid-cols-2 gap-2 border p-2">
+      <div className="grid grid-cols-2 gap-2 border p-2 rounded">
         <div>
-          <label>Drawing Color:</label>
+          <label className="block text-sm font-medium">Drawing Color:</label>
           <input
             type="color"
             value={drawingColor}
@@ -188,11 +205,11 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
               }
             }}
             disabled={drawingBrushType === "erase"}
-            className="border p-1 mt-1 w-full disabled:opacity-50"
+            className="border p-1 mt-1 w-full disabled:opacity-50 h-10 cursor-pointer"
           />
         </div>
         <div>
-          <label>Shadow Color:</label>
+          <label className="block text-sm font-medium">Shadow Color:</label>
           <input
             type="color"
             value={drawingShadowColor}
@@ -204,13 +221,13 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
               }
             }}
             disabled={drawingBrushType === "erase"}
-            className="border p-1 mt-1 w-full disabled:opacity-50"
+            className="border p-1 mt-1 w-full disabled:opacity-50 h-10 cursor-pointer"
           />
         </div>
       </div>
-      <div className="border p-2">
-        <div>
-          <label>Line Width: {drawingLineWidth}</label>
+      <div className="border p-2 rounded">
+        <div className="mb-2">
+          <label className="block text-sm font-medium">Line Width: {drawingLineWidth}</label>
           <input
             type="range"
             min="1"
@@ -229,7 +246,7 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label>Shadow Width: {drawingShadowWidth}</label>
+            <label className="block text-sm font-medium">Shadow Width: {drawingShadowWidth}</label>
             <input
               type="range"
               min="0"
@@ -248,7 +265,7 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
             />
           </div>
           <div>
-            <label>Shadow Offset: {drawingShadowOffset}</label>
+            <label className="block text-sm font-medium">Shadow Offset: {drawingShadowOffset}</label>
             <input
               type="range"
               min="0"
@@ -271,7 +288,7 @@ const DrawingControls = ({ canvas, selectedTool, setSelectedTool }) => {
       </div>
       <button
         onClick={clearCanvas}
-        className="p-2 bg-red-500 text-white rounded"
+        className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
       >
         Clear Canvas
       </button>
