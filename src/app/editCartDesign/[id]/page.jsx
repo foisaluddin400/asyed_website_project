@@ -19,13 +19,14 @@ export default function AddToDesign() {
   const router = useRouter();
   const splideRef = useRef(null);
   const id = params?.id;
+  console.log(id)
 
   const {
     data: singleDesignData,
     isLoading: loadingCart,
     isError: errorCart,
   } = useGetSingleCartQuery({ id });
-
+  console.log(singleDesignData)
   const [updateCart] = useUpdateCartItemMutation();
 
   const [selectedColors, setSelectedColors] = useState([]);

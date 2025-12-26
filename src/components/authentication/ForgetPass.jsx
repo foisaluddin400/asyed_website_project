@@ -47,7 +47,8 @@ setLoading(true)
         <p className="text-gray-600 mb-6 text-sm">Enter your email</p>
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          {/* Email */}
+
+
           <Form.Item
             label="Enter Email Address"
             name="email"
