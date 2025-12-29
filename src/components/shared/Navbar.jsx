@@ -22,6 +22,7 @@ import { useGetCategoryQuery } from "@/redux/Api/categoryApi";
 import { useGetCartQuery } from "@/redux/Api/productApi";
 import { logout } from "@/redux/features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { MarkIcon } from "./Image";
 
 // Dynamically import Ant Design Drawer
 const Drawer = dynamic(() => import("antd").then((mod) => mod.Drawer), {
@@ -46,16 +47,22 @@ export const Navbar = () => {
     setIsLoggedIn(!!token);
   }, []);
 
-  const navItems = [
-    { label: "Home", path: "/", isHighlighted: true },
-    { label: "Custom Apparel", path: "/allProduct", children: [] },
-    { label: "My Product", path: "/my_product" },
-    { label: "Recent Design", path: "/my-recent-design" },
+const navItems = [
+  { label: "Home", path: "/", isHighlighted: true },
+  { label: "Custom Apparel", path: "/allProduct" },
 
-    { label: "About", path: "/about" },
-    { label: "Contact", path: "/contactUs" },
-    { label: "Blog", path: "/blog" },
-  ];
+  ...(isLoggedIn
+    ? [
+        { label: "My Product", path: "/my_product" },
+        { label: "Recent Design", path: "/my-recent-design" },
+      ]
+    : []),
+
+  { label: "About", path: "/about" },
+  { label: "Contact", path: "/contactUs" },
+  { label: "Blog", path: "/blog" },
+];
+
 
   // Mega Men
   const renderMegaMenu = () => {
@@ -180,14 +187,7 @@ export const Navbar = () => {
                 <Menu className="w-6 h-6" />
               </button>
               <Link href="/" className="text-2xl font-bold">
-                <Image
-                  src="/logo.png"
-                  alt="Logo"
-                  width={160}
-                  height={40}
-                  className="w-[130px] md:w-[160px]"
-                  priority
-                />
+                <MarkIcon></MarkIcon>
               </Link>
             </div>
 
@@ -229,7 +229,7 @@ export const Navbar = () => {
                     okType="danger"
                     onConfirm={handleLogout}
                   >
-                    <button className="bg-gradient-to-r  from-indigo-200 via-blue-400 to-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2">
+                    <button className="bg-white text-primary px-4 py-2 rounded-md flex items-center gap-2">
                       <LogOut className="w-4 h-4" />
                       Log Out
                     </button>
@@ -244,7 +244,7 @@ export const Navbar = () => {
                     </Link>
                     <Link
                       href="/signIn"
-                      className=" bg-gradient-to-r from-indigo-200 via-blue-400 to-blue-700 text-white px-4 py-2 rounded-md"
+                      className=" bg-white text-primary px-4 py-2 rounded-md"
                     >
                       Log In
                     </Link>
@@ -290,7 +290,7 @@ export const Navbar = () => {
                       href={item.path}
                       className={`flex items-center gap-1 px-2 py-1 rounded ${
                         pathname === item.path || isPathActive(item)
-                          ? "bg-secondary text-black font-medium"
+                          ? "bg-primary text-white font-medium"
                           : "text-gray-600 hover:text-gray-900"
                       }`}
                     >

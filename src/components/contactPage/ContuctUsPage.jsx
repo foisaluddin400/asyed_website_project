@@ -20,7 +20,7 @@ const ContuctUsPage = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Our Location Section */}
-      <section className="px-6 py-12 max-w-6xl mx-auto">
+      <section className=" py-12 container mx-auto">
         <h2 className="text-2xl font-semibold text-gray-800 mb-8">Our Location</h2>
         {contactData?.data?.Country && (
           <iframe
@@ -38,7 +38,7 @@ const ContuctUsPage = () => {
       </section>
 
       {/* Contact Form and Business Info Section */}
-      <section className="px-6 pb-12 max-w-6xl mx-auto">
+      <section className=" pb-12 container mx-auto">
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Contact Form */}
           <ContactForm />

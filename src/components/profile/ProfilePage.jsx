@@ -1,49 +1,42 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { IoCameraOutline } from 'react-icons/io5';
-import { message, Spin } from 'antd';
-import MyOrder from './MyOrder';
-import MyReview from './MyReview';
-import PasswordChange from './PasswordChange';
-import MyAddress from './MyAddress';
+import React, { useState, useEffect } from "react";
+import { IoCameraOutline } from "react-icons/io5";
+import { message, Spin } from "antd";
+import MyOrder from "./MyOrder";
+import MyReview from "./MyReview";
+import PasswordChange from "./PasswordChange";
+import MyAddress from "./MyAddress";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
-} from '@/redux/Api/userApi';
-import { imageUrl } from '@/redux/Api/baseApi';
-import { toast } from 'react-toastify';
-
-
+} from "@/redux/Api/userApi";
+import { imageUrl } from "@/redux/Api/baseApi";
+import { toast } from "react-toastify";
 
 export const ProfilePage = () => {
-  /* ---------- FETCH PROFILE ---------- */
   const { data: profileData, isLoading, refetch } = useGetProfileQuery();
   const profile = profileData?.data;
-const [loading, setLoading] = useState(false);
-  /* ---------- UPDATE MUTATION ---------- */
+
   const [updateProfile] = useUpdateProfileMutation();
 
-  /* ---------- UI STATE ---------- */
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  /* ---------- FORM STATE ---------- */
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [imageFile, setImageFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewUrl, setPreviewUrl] = useState("");
 
-  /* ---------- SYNC FETCHED DATA TO FORM ---------- */
   useEffect(() => {
     if (profile) {
-      setFirstName(profile.firstName || '');
-      setLastName(profile.lastName || '');
-      setPreviewUrl(profile.imageUrl ? `${imageUrl}${profile.imageUrl}` : '');
+      setFirstName(profile.firstName || "");
+      setLastName(profile.lastName || "");
+      setPreviewUrl(profile.imageUrl ? `${imageUrl}${profile.imageUrl}` : "");
     }
   }, [profile]);
 
-  /* ---------- IMAGE HANDLER ---------- */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -52,190 +45,259 @@ const [loading, setLoading] = useState(false);
     }
   };
 
-  /* ---------- SAVE HANDLER ---------- */
   const handleSave = async () => {
     if (!profile?._id) {
-      toast.error('User ID missing');
+      toast.error("User ID missing");
       return;
     }
 
     const data = new FormData();
-    if (imageFile) data.append('image', imageFile);
-    data.append('firstName', firstName);
-    data.append('lastName', lastName);
-setLoading(true)
+    if (imageFile) data.append("image", imageFile);
+    data.append("firstName", firstName);
+    data.append("lastName", lastName);
+
+    setLoading(true);
     try {
       const res = await updateProfile({ data, id: profile._id }).unwrap();
-      toast.success(res.message || 'Profile updated');
+      toast.success(res.message || "Profile updated successfully!");
       setIsEditing(false);
-      setLoading(false)
       refetch();
     } catch (err) {
-      toast.error(err?.data?.message || 'Update failed');
-      console.error(err);
-      setLoading(false)
+      toast.error(err?.data?.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
     }
   };
 
-  /* ---------- CANCEL HANDLER ---------- */
   const handleCancel = () => {
     if (profile) {
-      setFirstName(profile.firstName || '');
-      setLastName(profile.lastName || '');
+      setFirstName(profile.firstName || "");
+      setLastName(profile.lastName || "");
       setImageFile(null);
-      setPreviewUrl(profile.imageUrl ? `${imageUrl}${profile.imageUrl}` : '');
+      setPreviewUrl(profile.imageUrl ? `${imageUrl}${profile.imageUrl}` : "");
     }
     setIsEditing(false);
   };
 
-  /* ---------- RENDER ---------- */
-  if (isLoading) return <div className="text-center py-10">Loading…</div>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Spin size="large" tip="Loading profile..." />
+      </div>
+    );
+  }
+
+  const tabs = [
+    { key: "profile", label: "My Profile" },
+    { key: "order", label: "My Orders" },
+    { key: "review", label: "My Reviews" },
+    { key: "address", label: "My Addresses" },
+    { key: "password", label: "Change Password" },
+  ];
 
   return (
-    <div className="md:flex w-full container mx-auto mt-6 px-4 lg:px-0 pb-20">
-      {/* Sidebar */}
-      <div className="md:w-1/4 bg-light md:bg-transparent p-3 lg:px-0">
-        <h2 className="text-lg font-semibold mb-6">Manage My Account</h2>
-        <ul className="space-y-4">
-          {['profile', 'order', 'review', 'address', 'password'].map((tab) => (
-            <li
-              key={tab}
-              className={`cursor-pointer capitalize ${
-                activeTab === tab ? 'text-blue-800 font-semibold' : 'text-gray-500'
-              }`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab === 'profile'
-                ? 'My Profile'
-                : tab === 'order'
-                ? 'My Order'
-                : tab.charAt(0).toUpperCase() + tab.slice(1) + (tab === 'order' ? '' : 's')}
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="  pt-5">
+      <div className=" mx-auto px-4 container">
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+          My Account
+        </h1>
 
-      {/* Divider */}
-      <div className="hidden md:block w-px bg-blue-900 mx-6"></div>
-
-      {/* Content */}
-      <div className="md:flex-1 mt-6 md:mt-0">
-        {/* PROFILE TAB */}
-        {activeTab === 'profile' && (
-          <div className="max-w-2xl mx-auto">
-            {/* Avatar */}
-            <div className="relative w-[140px] h-[140px] mx-auto mb-6">
-              <input
-                type="file"
-                accept="image/*"
-                id="profile-img"
-                className="hidden"
-                onChange={handleImageChange}
-                disabled={!isEditing}
-              />
-              <img
-                src={previewUrl || '/placeholder-avatar.png'}
-                alt="Profile"
-                className="w-full h-full rounded-full object-cover border"
-              />
-              {isEditing && (
-                <label
-                  htmlFor="profile-img"
-                  className="absolute bottom-0 right-0 bg-white rounded-full w-9 h-9 flex items-center justify-center cursor-pointer shadow-md"
-                >
-                  <IoCameraOutline className="text-xl text-gray-700" />
-                </label>
-              )}
-            </div>
-
-            {/* Form Fields */}
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm text-gray-600 mb-1">First Name</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <p className="font-medium">{firstName}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm text-gray-600 mb-1">Last Name</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  ) : (
-                    <p className="font-medium">{lastName}</p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-600 mb-1">E-mail Address</label>
-                <p className="font-medium">{profile?.email}</p>
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="mt-8 flex gap-3">
-              {isEditing ? (
-                <>
-                 
-
-
-<button        onClick={handleSave}
-                    className={`w-full py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
-                      loading
-                        ? "bg-red-400 cursor-not-allowed"
-                        : "bg-primary hover:bg-red-500"
-                    }`}
-                    type="submit"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <Spin size="small" />
-                        <span>Submitting...</span>
-                      </>
-                    ) : (
-                      "Submit"
-                    )}
-                  </button>
-
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Sidebar - Desktop */}
+          <div className="hidden lg:block lg:col-span-3">
+            <div className="bg-white rounded-lg border p-6 sticky top-24">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6">
+                Manage My Account
+              </h2>
+              <nav className="space-y-2">
+                {tabs.map((tab) => (
                   <button
-                    onClick={handleCancel}
-                    className="border border-gray-400 text-gray-700 px-6 py-2 rounded hover:bg-gray-50 transition"
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 ${
+                      activeTab === tab.key
+                        ? "bg-primary text-white font-medium shadow-md"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    }`}
                   >
-                    Cancel
+                    {tab.label}
                   </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="bg-primary text-white px-6 py-2 rounded hover:bg-primary/90 transition"
-                >
-                  Edit Profile
-                </button>
-              )}
+                ))}
+              </nav>
             </div>
           </div>
-        )}
 
-        {/* OTHER TABS (unchanged) */}
-        {activeTab === 'order' && <MyOrder />}
-        {activeTab === 'review' && <MyReview />}
-        {activeTab === 'address' && <MyAddress />}
-        {activeTab === 'password' && <PasswordChange />}
+          {/* Mobile Tabs */}
+          <div className="lg:hidden col-span-full">
+            <div className="bg-white rounded-lg border p-4">
+              <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`whitespace-nowrap px-5 py-3 rounded-full font-medium transition-all ${
+                      activeTab === tab.key
+                        ? "bg-primary text-white shadow-md"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-9">
+            <div className="bg-white rounded-lg border p-2 md:p-4">
+              {activeTab === "profile" && (
+                <>
+                  {/* Profile Header */}
+                  <div className=" mb-10">
+                    <div className="relative inline-block">
+                      <div className="w-32 h-32 mx-auto mb-6">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="profile-img"
+                          className="hidden"
+                          onChange={handleImageChange}
+                          disabled={!isEditing}
+                        />
+
+                        <div className="relative">
+                          {previewUrl ? (
+                            // If there's a profile image (either uploaded preview or existing one)
+                            <img
+                              src={previewUrl}
+                              alt="Profile"
+                              className="w-[130px] h-[130px] rounded-full object-cover ring-4 ring-gray-200 shadow-lg"
+                            />
+                          ) : (
+                            // Fallback: Show initials on primary background
+                            <div className="w-[130px] h-[130px] rounded-full bg-gray-300 flex items-center justify-center text-white text-3xl font-bold uppercase shadow-lg ring-4 ring-gray-200">
+                              {firstName ? firstName.charAt(0) : "U"}
+                            </div>
+                          )}
+
+                          {/* Camera icon overlay - only in edit mode */}
+                          {isEditing && (
+                            <label
+                              htmlFor="profile-img"
+                              className="absolute bottom-0 right-0 bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-xl hover:bg-primary/90 transition-all duration-200"
+                            >
+                              <IoCameraOutline className="text-xl" />
+                            </label>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      {firstName} {lastName}
+                    </h2>
+                    <p className="text-gray-600 mt-1">{profile?.email}</p>
+                  </div>
+
+                  {/* Form Fields */}
+                  <div className=" space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          First Name
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                            placeholder="Enter first name"
+                          />
+                        ) : (
+                          <p className="text-lg text-gray-800 font-medium">
+                            {firstName || "-"}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Last Name
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                            placeholder="Enter last name"
+                          />
+                        ) : (
+                          <p className="text-lg text-gray-800 font-medium">
+                            {lastName || "-"}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address
+                      </label>
+                      <p className="text-lg text-gray-800 font-medium">
+                        {profile?.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className=" mt-10 flex flex-col sm:flex-row gap-4">
+                    {isEditing ? (
+                      <>
+                        <button
+                          onClick={handleSave}
+                          disabled={loading}
+                          className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                        >
+                          {loading ? (
+                            <>
+                              <Spin size="small" />
+                              Saving...
+                            </>
+                          ) : (
+                            "Save Changes"
+                          )}
+                        </button>
+
+                        <button
+                          onClick={handleCancel}
+                          className="flex-1 border border-gray-300 text-gray-700 font-medium py-4 rounded-xl hover:bg-gray-50 transition"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => setIsEditing(true)}
+                        className="w-full sm:w-auto px-10 bg-primary hover:bg-primary/90 text-white font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                      >
+                        Edit Profile
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Other Tabs */}
+              {activeTab === "order" && <MyOrder />}
+              {activeTab === "review" && <MyReview />}
+              {activeTab === "address" && <MyAddress />}
+              {activeTab === "password" && <PasswordChange />}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

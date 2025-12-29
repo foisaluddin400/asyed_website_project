@@ -2,15 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useGetCartQuery } from "@/redux/Api/productApi";
+import {
+  useApplyCouponMutation,
+  useGetCartQuery,
+  useRemoveCouponMutation,
+} from "@/redux/Api/productApi";
 import { imageUrl } from "@/redux/Api/baseApi";
 import { toast } from "react-toastify";
 import {
   useAddOrderCheckoutMutation,
   useGetAddressQuery,
 } from "@/redux/Api/metaApi";
-import { v4 as uuidv4 } from "uuid"; // npm i uuid
+import { v4 as uuidv4 } from "uuid";
 import MyAddress from "@/components/profile/MyAddress";
+import { Form, Input, Spin } from "antd";
 
 const OrderDetails = () => {
   const router = useRouter();
@@ -21,24 +26,31 @@ const OrderDetails = () => {
     isLoading: cartLoading,
     isError: cartError,
   } = useGetCartQuery();
-
+  const [form] = Form.useForm();
+  const [applyCoupon] = useApplyCouponMutation();
+  const [removeCoupon] = useRemoveCouponMutation();
   // ---------- ADDRESS ----------
   const { data: addressResp, isLoading: addrLoading } = useGetAddressQuery();
   const addressData = addressResp?.data || [];
-
+  const [loading, setLoading] = useState(false);
   // Auto-select default address
   const defaultAddressId =
     addressData.find((a) => a.isDefault)?._id || addressData[0]?._id || null;
-
+const appliedCoupon = cartData?.data?.summary?.coupon?.code;
   // ---------- PAYMENT ----------
   const [checkout, { isLoading: paying }] = useAddOrderCheckoutMutation();
 
   // ---------- CART UI STATE ----------
   const [selectedColors, setSelectedColors] = useState([]);
 
+useEffect(() => {
+  if (appliedCoupon) {
+    form.setFieldsValue({ code: appliedCoupon });
+  }
+}, [appliedCoupon]);
+
   useEffect(() => {
     if (cartData?.data?.items && selectedColors.length === 0) {
-      // শুধু isSelected: true আইটেমগুলো নিবে
       const filteredItems = cartData.data.items.filter(
         (item) => item.isSelected
       );
@@ -110,6 +122,32 @@ const OrderDetails = () => {
     0
   );
 
+const onFinish = async (values) => {
+  setLoading(true);
+  try {
+    const res = await applyCoupon({ code: values.code }).unwrap();
+    toast.success(res?.message || "Coupon applied successfully!");
+  } catch (err) {
+    toast.error(err?.data?.message || "Coupon failed!");
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleRemoveCoupon = async () => {
+  setLoading(true);
+  try {
+    const res = await removeCoupon().unwrap();
+    toast.success(res?.message || "Coupon removed successfully!");
+    form.resetFields();
+  } catch (err) {
+    toast.error(err?.data?.message || "Failed to remove coupon!");
+  } finally {
+    setLoading(false);
+  }
+};
+  
+
   const handlePayment = async () => {
     if (!defaultAddressId) {
       toast.error("No delivery address available");
@@ -127,6 +165,7 @@ const OrderDetails = () => {
         body: payload,
         headers: { "Idempotency-Key": idempotencyKey },
       }).unwrap();
+      console.log(res)
 
       toast.success("Order placed successfully!");
       router.push(res.data.payment.url);
@@ -142,7 +181,6 @@ const OrderDetails = () => {
   if (cartError)
     return <p className="text-center py-6 text-red-500">Error loading cart</p>;
 
-  // শুধু isSelected: true আইটেম থাকলে দেখাবে
   const selectedItems =
     cartData?.data?.items?.filter((item) => item.isSelected) || [];
   if (!selectedItems.length)
@@ -271,31 +309,88 @@ const OrderDetails = () => {
             );
           })}
 
-          {/* Overall Totals */}
-          <div className="mt-8 border-t pt-4 flex justify-between font-medium">
-            <p>
-              Total Qty: <strong>{overallTotalQuantity}</strong>
-            </p>
-            <p>
-              Total Price:{" "}
-              <strong className="text-primary">
-                ${overallTotalPrice.toFixed(2)}
-              </strong>
-            </p>
-          </div>
+          <div className=" p-2 border rounded-md">
+            <Form form={form} layout="vertical" onFinish={onFinish}>
+  <Form.Item
+    label="Enter Coupon Code"
+    name="code"
+    rules={[
+      {
+        required: !appliedCoupon,
+        message: "Please enter your coupon code!",
+      },
+    ]}
+  >
+    <div className="flex gap-2">
+      {/* Input - 90% */}
+      <Input
+        style={{ height: "50px" }}
+        placeholder="Enter Coupon Code"
+        disabled={!!appliedCoupon}
+        value={appliedCoupon || undefined}
+        className="flex-[9]"
+      />
 
-          {/* PAYMENT BUTTON */}
-          <button
-            onClick={handlePayment}
-            disabled={paying || !defaultAddressId}
-            className={`mt-6 w-full py-3 rounded text-white transition ${
-              paying || !defaultAddressId
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-primary hover:bg-red-600"
-            }`}
-          >
-            {paying ? "Processing..." : "Proceed to Payment"}
-          </button>
+      {/* Button - 10% */}
+      {!appliedCoupon ? (
+        /* APPLY BUTTON */
+        <button
+          type="submit"
+          disabled={loading}
+          className={`flex-[1] h-[50px] rounded text-white flex justify-center items-center transition-all ${
+            loading
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          {loading ? <Spin size="small" /> : "Apply"}
+        </button>
+      ) : (
+        /* DELETE BUTTON */
+        <button
+          type="button"
+          onClick={handleRemoveCoupon}
+          disabled={loading}
+          className={`flex-[1] h-[50px] rounded text-white flex justify-center items-center transition-all ${
+            loading
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-red-500 hover:bg-red-600"
+          }`}
+        >
+          {loading ? <Spin size="small" /> : "✕"}
+        </button>
+      )}
+    </div>
+  </Form.Item>
+</Form>
+
+
+            {/* Overall Totals */}
+            <div className="mt-8 border-t pt-4 flex justify-between font-medium">
+              <p>
+                Total Qty: <strong>{overallTotalQuantity}</strong>
+              </p>
+              <p>
+                Total Price:
+                <strong className="text-primary">
+                  ${cartData?.data?.summary?.selectedTotalAmount}
+                </strong>
+              </p>
+            </div>
+
+            {/* PAYMENT BUTTON */}
+            <button
+              onClick={handlePayment}
+              disabled={paying || !defaultAddressId}
+              className={`mt-6 w-full py-3 rounded text-white transition ${
+                paying || !defaultAddressId
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-primary hover:bg-red-600"
+              }`}
+            >
+              {paying ? "Processing..." : "Proceed to Payment"}
+            </button>
+          </div>
         </div>
 
         {/* ===== RIGHT: DELIVERY ADDRESS ===== */}

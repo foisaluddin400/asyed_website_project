@@ -5,19 +5,17 @@ import Brands from "@/components/HomePage/Brands";
 import Hero from "@/components/HomePage/Hero";
 import Testomonial from "@/components/HomePage/Testomonial";
 
-
-
-
 export default function Home() {
-  
   return (
-    <div className="container m-auto">
+    <div className="container m-auto ">
       <Hero></Hero>
-       <Apparel></Apparel>
-       <AccessoryGift></AccessoryGift>
-       <Brands></Brands>
-       <Banner></Banner>
-       <Testomonial></Testomonial>
+      <div className="px-4 lg:px-0">
+        <Apparel></Apparel>
+        <AccessoryGift></AccessoryGift>
+      </div>
+
+      <Banner></Banner>
+      <Testomonial></Testomonial>
     </div>
   );
 }

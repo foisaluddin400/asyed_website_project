@@ -2,8 +2,10 @@
 import React from "react";
 import cover from "../../../public/img/cover.png";
 import { useGetPrivecyQuery } from "@/redux/Api/metaApi";
+import NoDataFound from "@/components/NoDataFound";
 const PrivecyAndPolicy = () => {
   const { data: privecyPolicy } = useGetPrivecyQuery();
+  console.log(privecyPolicy)
   return (
     <div>
       <div>
@@ -34,7 +36,7 @@ const PrivecyAndPolicy = () => {
               dangerouslySetInnerHTML={{ __html: privecyPolicy?.data?.content }}
             />
           ) : (
-            <p>No Data</p>
+            <NoDataFound></NoDataFound>
           )}
         </div>
       </div>

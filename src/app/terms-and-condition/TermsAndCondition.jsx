@@ -2,6 +2,7 @@
 import React from "react";
 import cover from "../../../public/img/cover.png";
 import {  useGetTermsQuery } from "@/redux/Api/metaApi";
+import NoDataFound from "@/components/NoDataFound";
 const TermsAndCondition = () => {
   const { data: privecyPolicy } = useGetTermsQuery();
   return (
@@ -34,7 +35,7 @@ const TermsAndCondition = () => {
               dangerouslySetInnerHTML={{ __html: privecyPolicy?.data?.content }}
             />
           ) : (
-            <p>No Data</p>
+            <NoDataFound></NoDataFound>
           )}
         </div>
       </div>

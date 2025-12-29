@@ -1,130 +1,121 @@
+"use client";
+
 import React from "react";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/react-splide/css";
 import { Star } from "lucide-react";
 
 const testimonials = [
   {
     id: 1,
-    name: "Hridoy Hossain",
+    name: "Sufiyan Sarker",
     role: "UX & UI Designer",
-    avatar: "/professional-male-designer-glasses.png",
+    avatar:
+      "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     rating: 5,
     review:
       "I've used other kits, but this one is the best. The attention to detail and usability are truly amazing.",
   },
   {
     id: 2,
-    name: "Mojahid Leder",
+    name: "Sadiya Akter",
     role: "UI/UX Designer",
-    avatar: "/professional-bearded-designer.png",
+    avatar:
+      "https://images.pexels.com/photos/3978586/pexels-photo-3978586.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
     rating: 5,
     review:
-      "The quality of the design is top-notch, and I love how organized the files are. It's easy to find what I need.",
+      "The quality of the design is top-notch, and I love how organized the files are.",
   },
   {
     id: 3,
-    name: "Sufiya (M) Leder",
+    name: "Sakib Al Hasan",
     role: "Front End Developer",
-    avatar: "/placeholder-qe61h.png",
+    avatar:
+      "https://images.pexels.com/photos/2379003/pexels-photo-2379003.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
     rating: 5,
     review:
-      "This kit exceeded my expectations! The components are versatile and make implementation much easier.",
+      "This kit exceeded my expectations! The components are versatile and easy to use.",
   },
   {
     id: 4,
-    name: "Roshan Pro Max",
+    name: "Roshan Pro",
     role: "UI/UX Designer",
-    avatar: "/professional-designer.png",
+    avatar:
+      "https://images.pexels.com/photos/16323430/pexels-photo-16323430/free-photo-of-smiling-man-in-blue-shirt.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     rating: 5,
     review:
-      "Perfect for quick prototyping! The designs are professional and work seamlessly with my workflow.",
-  },
-  {
-    id: 5,
-    name: "Mirana Marci",
-    role: "3D Designer",
-    avatar: "/professional-female-3d-designer.png",
-    rating: 5,
-    review:
-      "I was blown away by how complete this UI kit is. It has everything I need, from assets to components.",
-  },
-  {
-    id: 6,
-    name: "Hearts of Taras",
-    role: "Logo Designer",
-    avatar: "/creative-designer.png",
-    rating: 5,
-    review:
-      "Amazing work! The color schemes are vibrant, and the icons fit perfectly with all my projects.",
+      "Perfect for quick prototyping! The designs are professional and smooth.",
   },
 ];
 
-function StarRating({ rating }) {
-  return (
-    <div className="flex gap-1">
-      {[...Array(5)].map((_, i) => (
-        <Star
-          key={i}
-          className={`w-4 h-4 ${
-            i < rating ? "fill-orange-400 text-orange-400" : "fill-gray-200 text-gray-200"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
+const StarRating = ({ rating }) => (
+  <div className="flex gap-1">
+    {[...Array(5)].map((_, i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 ${
+          i < rating
+            ? "fill-orange-400 text-orange-400"
+            : "fill-gray-300 text-gray-300"
+        }`}
+      />
+    ))}
+  </div>
+);
 
-const Testomonial = () => {
+const TestimonialSlider = () => {
   return (
-    <div>
-         <section className=" pb-20">
-     <h1 className="text-4xl text-center pb-4 pt-20">
-              Testimonials
-          </h1>
+    <section className="py-24 ">
+      <h1 className="text-4xl font-bold text-center mb-14">What People Say</h1>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {testimonials.map((testimonial) => (
-          <div
-            key={testimonial.id}
-            className="p-6 border rounded-lg shadow-sm  space-y-4"
-          >
-            {/* Avatar + Info */}
-            <div className="flex items-center gap-3">
-              <img
-                src={testimonial.avatar || "/placeholder.svg"}
-                alt={testimonial.name}
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div>
-                <h3 className="font-semibold text-foreground">
-                  {testimonial.name}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {testimonial.role}
+      <div className="max-w-6xl  mx-auto px-4">
+        <Splide
+          options={{
+            type: "loop",
+            perPage: 3,
+            gap: "1.5rem",
+            autoplay: true,
+            interval: 3500,
+            speed: 900,
+            pauseOnHover: true,
+            arrows: false,
+            pagination: true,
+            breakpoints: {
+              1024: { perPage: 2 },
+              640: { perPage: 1 },
+            },
+          }}
+        >
+          {testimonials.map((item) => (
+            <SplideSlide key={item.id}>
+              <div className="h-full p-6 overflow-visible  border rounded-md">
+                {/* User */}
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={item.avatar}
+                    alt={item.name}
+                    className="w-14 h-14 rounded-full object-cover border"
+                  />
+                  <div>
+                    <h3 className="font-semibold text-lg">{item.name}</h3>
+                    <p className="text-sm text-gray-500">{item.role}</p>
+                  </div>
+                </div>
+
+                {/* Rating */}
+                <StarRating rating={item.rating} />
+
+                {/* Review */}
+                <p className="mt-4 text-gray-700 leading-relaxed text-sm">
+                  “{item.review}”
                 </p>
               </div>
-            </div>
-
-            {/* Rating */}
-            <StarRating rating={testimonial.rating} />
-
-            {/* Review */}
-            <p className="text-foreground leading-relaxed">
-              {testimonial.review}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Button */}
-      <div className="text-center">
-        <button className="text-red-500 hover:text-red-600 font-medium transition-colors">
-          See All Reviews
-        </button>
+            </SplideSlide>
+          ))}
+        </Splide>
       </div>
     </section>
-    </div>
-  )
-}
+  );
+};
 
-export default Testomonial
+export default TestimonialSlider;

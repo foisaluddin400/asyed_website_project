@@ -1,49 +1,90 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import banner from "../../../public/img/banner.png";
-import shirt from "../../../public/img/grup.png";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/react-splide/css";
+
+import { useGetCouponQuery } from "@/redux/Api/metaApi";
+import { imageUrl } from "@/redux/Api/baseApi";
 
 const Banner = () => {
+  const { data: couponData, isLoading } = useGetCouponQuery();
+
+  if (isLoading) return null;
+
   return (
     <div className="pt-20">
-      <div
-        className="w-full bg-cover bg-center relative"
-        style={{ backgroundImage: `url(${banner.src})` }}
+      <Splide
+        options={{
+          type: "loop",
+          autoplay: true,
+          interval: 4000,
+          pauseOnHover: true,
+          arrows: false,
+          pagination: true,
+        }}
+        className="w-full"
       >
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 items-center gap-10">
-          {/* Left Side */}
-          <div className="space-y-6 text-left">
-            <button className="bg-dark px-2 py-1 text-white">
-              SAVE UP TO $200.00
-            </button>
-            <h1 className="text-4xl md:text-5xl font-bold text-black leading-snug">
-              Ladies Modish Threads
-            </h1>
-            <p className="text-lg text-gray-700 max-w-md">
-              Bring your ideas to life with our easy-to-use custom T-shirt design
-              tool.
-            </p>
-            <Link href="/allProduct/productDetails/design">
-              <button className="bg-primary hover:bg-red-600 text-white px-8 py-3 rounded font-medium">
-                START DESIGNING →
-              </button>
-            </Link>
-          </div>
-
-          {/* Right Side */}
-          <div className="flex justify-center md:justify-end">
-            <div className="relative w-full max-w-md h-[400px] md:h-[500px] drop-shadow-lg">
-              <Image
-                src={shirt}
-                alt="Group Shirt"
-                layout="fill"
-                objectFit="contain"
+        {couponData?.data?.map((item) => (
+          <SplideSlide key={item._id}>
+            <div className="relative w-full h-[500px] md:h-[600px]">
+              {/* Background Image */}
+              <img
+                src={`${imageUrl}${item.image}`}
+                alt={item.name}
+                className="w-full h-[500px] md:h-[600px] object-cover"
               />
+
+              {/* Dark Overlay */}
+              <div className="absolute inset-0 bg-black/50" />
+
+              {/* Content */}
+              <div className="absolute inset-0 flex items-center">
+                <div className=" md:px-16 px-4 grid grid-cols-1 md:grid-cols-2 items-center gap-10">
+                  {/* Left Content */}
+                  <div className="text-white space-y-4">
+                    <span className="inline-block bg-primary px-3 py-1 text-sm rounded">
+                      Coupon Code: {item.code}
+                    </span>
+
+                    <h1 className="text-4xl md:text-5xl font-bold">
+                      {item.name}
+                    </h1>
+
+                    <p className="text-lg">
+                      Save{" "}
+                      <span className="font-semibold">
+                        ${item.discountValue}
+                      </span>
+                    </p>
+
+                    <p className="text-sm opacity-80">
+                      Valid till: {new Date(item.endDate).toLocaleDateString()}
+                    </p>
+
+                    <Link
+                      href={
+                        item.category
+                          ? `/allProduct?category=${item.category}`
+                          : "/allProduct"
+                      }
+                    >
+                      <button className="mt-4 bg-primary hover:bg-red-600 transition px-8 py-3 rounded font-medium">
+                        Get Shop
+                      </button>
+                    </Link>
+                  </div>
+
+                  {/* Right Space */}
+                  <div className="hidden md:block" />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </SplideSlide>
+        ))}
+      </Splide>
     </div>
   );
 };

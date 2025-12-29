@@ -107,7 +107,7 @@ const MyAddress = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-5xl">
+    <div className="container mx-auto  ">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">My Addresses</h1>
         <Button

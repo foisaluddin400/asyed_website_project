@@ -1,54 +1,32 @@
-import localFont from "next/font/local";
+import { Nunito } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./layout/ClientLayout";
 import ReduxProvider from "@/provider/ReduxProvider";
 import { ToastContainer } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+// Nunito Font
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-nunito",
 });
 
 export const metadata = {
-  title: "JusBuy Website",
-  description: "E-commerce",
+  title: "T-shirts Express",
+  description: "Your One-Stop Shop for Custom T-Shirts",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
-
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="product">
-      <body
-        className={`${geistSans.variable} bg-white ${geistMono.variable} antialiased`}
-      >
-
-
-
-        
-         <ReduxProvider>
-       
-            <div className="">
-               <ToastContainer
-              position="top-center"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
-              <ClientLayout>{children}</ClientLayout>
-            </div>
-     
+      <body className={`${nunito.variable} bg-white antialiased font-nunito`}>
+        <ReduxProvider>
+          <ToastContainer position="top-center" autoClose={3000} pauseOnHover />
+          <ClientLayout>{children}</ClientLayout>
         </ReduxProvider>
       </body>
     </html>

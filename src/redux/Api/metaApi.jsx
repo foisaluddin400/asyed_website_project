@@ -17,7 +17,7 @@ const meta = baseApi.injectEndpoints({
 getPrivecy: builder.query({
       query: () => {
         return {
-          url: `/pages/privacy-policy`,
+          url: `/pages/privacy`,
           method: "GET",
         };
       },
@@ -28,7 +28,7 @@ getPrivecy: builder.query({
     getTerms: builder.query({
       query: () => {
         return {
-          url: `/faq`,
+          url: `/pages/terms`,
           method: "GET",
         };
       },
@@ -37,7 +37,7 @@ getPrivecy: builder.query({
   getAboutUs: builder.query({
       query: () => {
         return {
-          url: `/pages/about-us`,
+          url: `/pages/about`,
           method: "GET",
         };
       },
@@ -208,6 +208,24 @@ getPrivecy: builder.query({
       providesTags: ["updateProfile"],
     }),
 
+    getCoupon: builder.query({
+      query: () => {
+        return {
+          url: `/coupons/active`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+  getBanner: builder.query({
+      query: () => {
+        return {
+          url: `/banners/active`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
    
   }),
 });
@@ -231,5 +249,5 @@ export const {
   useGetMyReviewQuery,
   useAddReOrderCheckoutMutation,
   useGetAboutUsQuery,
-  useGetPrivecyQuery,useGetTermsQuery
+  useGetPrivecyQuery,useGetTermsQuery,useGetCouponQuery,useGetBannerQuery
 } = meta;

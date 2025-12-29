@@ -10,6 +10,7 @@ import { imageUrl } from "@/redux/Api/baseApi";
 const AccessoryGift = () => {
   const { data: popularProducts } = useGetPopularProductQuery();
   console.log(popularProducts);
+  
 
 
   return (
@@ -45,16 +46,14 @@ const AccessoryGift = () => {
 
             {/* Wishlist */}
             <div className="absolute top-2 right-2 flex flex-col gap-2">
-              <button className="bg-white p-2 rounded-full shadow hover:text-red-500">
-                <FaHeart />
-              </button>
+             
             </div>
 
             {/* Image */}
             <Link href={`/productDetails/${item._id}`}>
              <div className="flex justify-center">
                <div className=" mb-4 relative w-32 h-32">
-                <Image
+                <img
                   src={`${imageUrl}${item.thumbnail}`}
                   alt={item.productName}
                   layout="fill"

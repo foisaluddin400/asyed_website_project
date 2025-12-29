@@ -142,6 +142,30 @@ const blog = baseApi.injectEndpoints({
       },
       invalidatesTags: ["updateProfile"],
     }),
+
+
+ applyCoupon: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/carts/apply-coupon",
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
+
+
+     removeCoupon: builder.mutation({
+      query: () => {
+        return {
+          url: "/carts/remove-coupon",
+          method: "POST",
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
+
     getSingleCart: builder.query({
       query: ({ id }) => {
         return {
@@ -345,4 +369,6 @@ export const {
   useGetReletedProductQuery,
   useGetSingleCartQuery,
   useGetSingleProductReviewQuery,
+  useApplyCouponMutation,
+  useRemoveCouponMutation
 } = blog;

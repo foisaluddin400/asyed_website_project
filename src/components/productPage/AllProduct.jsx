@@ -254,9 +254,7 @@ const AllProduct = () => {
 
                           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div className="flex space-x-1 bg-white rounded-full p-1 shadow-lg">
-                              <button className="p-1 hover:bg-gray-100 rounded-full">
-                                <Star className="h-4 w-4 text-yellow-400" />
-                              </button>
+                            
                             </div>
                           </div>
                         </div>

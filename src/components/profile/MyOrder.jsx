@@ -50,17 +50,17 @@ const MyOrder = () => {
     );
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto  py-2">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
 
-      <div className="space-y-8">
+      <div className="space-y-4">
         {myOrderData.data.map((order) => (
           <div
             key={order._id}
             className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow border border-gray-200 overflow-hidden"
           >
             {/* Order Header */}
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+            <div className="bg-gray-50 md:px-6 px-2 py-4 border-b border-gray-200">
               <div className="flex flex-wrap justify-between items-center gap-4">
                 <div>
                   <p className="text-sm text-gray-600">
@@ -100,13 +100,13 @@ const MyOrder = () => {
             </div>
 
             {/* Order Items */}
-            <div className="p-6 space-y-6">
+            <div className="md:p-6 p-2 space-y-6">
               {order.items.map((item) => {
                 const product = item.product;
                 const thumbnail = product?.thumbnail || "/placeholder.jpg";
 
                 return (
-                  <div key={item._id} className="flex gap-6">
+                  <div key={item._id} className="md:flex gap-6">
                     {/* Product Image */}
                     <div className="relative flex-shrink-0">
                       <div className="w-28 h-28 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
@@ -121,7 +121,7 @@ const MyOrder = () => {
                     </div>
 
                     {/* Product Details */}
-                    <div className="flex-1 space-y-3">
+                    <div className="flex-1 space-y-3 mt-4 md:mt-0">
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">
                           {product.productName}

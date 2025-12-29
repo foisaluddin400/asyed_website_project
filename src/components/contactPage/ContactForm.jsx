@@ -1,8 +1,9 @@
-'use client';
+"use client";
 import React from "react";
 import { Form, Input, Button, message } from "antd";
 import { useAddContactMutation } from "@/redux/Api/metaApi";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const { TextArea } = Input;
 
@@ -10,37 +11,33 @@ const ContactForm = () => {
   const [form] = Form.useForm();
   const [addContact, { isLoading }] = useAddContactMutation();
 
-const onFinish = async (values) => {
-  try {
-    const res = await addContact(values).unwrap();
+  const onFinish = async (values) => {
+    try {
+      const res = await addContact(values).unwrap();
 
-    // SweetAlert2 success alert
-    Swal.fire({
-      icon: 'success',
-      title: 'Success',
-      text: res?.message || 'Message sent successfully!',
-      confirmButtonColor: '#3085d6',
-    });
+      // SweetAlert2 success alert
+  toast.success(res?.message || "Message sent successfully!");
 
-    form.resetFields(); // reset form after success
-  } catch (err) {
-    // SweetAlert2 error alert
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: err?.data?.message || 'Something went wrong!',
-      confirmButtonColor: '#d33',
-    });
-  }
-};
+      form.resetFields(); // reset form after success
+    } catch (err) {
+      // SweetAlert2 error alert
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err?.data?.message || "Something went wrong!",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contact Form</h2>
-     <p className="text-gray-600 mb-8">
-  We&apos;d love to hear from you! Whether it&apos;s a question, feedback, or just a
-  hello — drop us a message.
-</p>
-
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+        Contact Form
+      </h2>
+      <p className="text-gray-600 mb-8">
+        We&apos;d love to hear from you! Whether it&apos;s a question, feedback,
+        or just a hello — drop us a message.
+      </p>
 
       <Form
         form={form}
@@ -76,14 +73,14 @@ const onFinish = async (values) => {
         </Form.Item>
 
         <Form.Item>
-          <Button
+          <button
             type="primary"
             htmlType="submit"
             loading={isLoading}
-            className="bg-blue-500"
+            className="bg-primary text-white px-6 py-3 rounded  transition-all duration-300"
           >
             Send Message
-          </Button>
+          </button>
         </Form.Item>
       </Form>
     </div>
