@@ -1108,7 +1108,7 @@ export default function DesignPage() {
 
         <div className="grid grid-cols-2 gap-2">
           <Popconfirm
-            title="Are you sure you want to delete this Business?"
+            title="Are you sure you want to Save This design?"
             onConfirm={() => switchSide("front")}
             okText="Yes"
             cancelText="No"
@@ -1128,7 +1128,7 @@ export default function DesignPage() {
           </Popconfirm>
 
           <Popconfirm
-            title="Are you sure you want to delete this Business?"
+            title="Are you sure you want to Save This design?"
             onConfirm={() => switchSide("back")}
             okText="Yes"
             cancelText="No"
@@ -1147,7 +1147,7 @@ export default function DesignPage() {
           {hasRightImage && (
             <>
               <Popconfirm
-                title="Are you sure you want to delete this Business?"
+                title="Are you sure you want to Save This design?"
                 onConfirm={() => switchSide("right")}
                 okText="Yes"
                 cancelText="No"
@@ -1170,7 +1170,7 @@ export default function DesignPage() {
           {hasLeftImage && (
             <>
               <Popconfirm
-                title="Are you sure you want to delete this Business?"
+                title="Are you sure you want to Save This design?"
                 onConfirm={() => switchSide("left")}
                 okText="Yes"
                 cancelText="No"

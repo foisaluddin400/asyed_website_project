@@ -196,6 +196,18 @@ const blog = baseApi.injectEndpoints({
       providesTags: ["updateProfile"],
     }),
 
+     getIcon: builder.query({
+      query: ({ page, limit, search }) => {
+        return {
+          url: `/icons?search=${search}&page=${page}&limit=${limit}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+
+    
+
     updateCartItem: builder.mutation({
       query: ({ data, id }) => {
         return {
@@ -370,5 +382,6 @@ export const {
   useGetSingleCartQuery,
   useGetSingleProductReviewQuery,
   useApplyCouponMutation,
-  useRemoveCouponMutation
+  useRemoveCouponMutation,
+  useGetIconQuery
 } = blog;

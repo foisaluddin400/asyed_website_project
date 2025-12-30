@@ -54,7 +54,7 @@ const Faq = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="container mx-auto px-6 py-16 container">
+      <div className=" mx-auto px-6 py-16 container">
   {/* Section Title */}
   <div className="text-center mb-12">
     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">

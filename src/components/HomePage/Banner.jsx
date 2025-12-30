@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
@@ -11,6 +11,7 @@ import { imageUrl } from "@/redux/Api/baseApi";
 
 const Banner = () => {
   const { data: couponData, isLoading } = useGetCouponQuery();
+  const [copiedId, setCopiedId] = useState(null);
 
   if (isLoading) return null;
 
@@ -31,22 +32,76 @@ const Banner = () => {
           <SplideSlide key={item._id}>
             <div className="relative w-full h-[500px] md:h-[600px]">
               {/* Background Image */}
+              {/* Background Image */}
               <img
                 src={`${imageUrl}${item.image}`}
                 alt={item.name}
                 className="w-full h-[500px] md:h-[600px] object-cover"
               />
 
-              {/* Dark Overlay */}
               <div className="absolute inset-0 bg-black/50" />
 
-              {/* Content */}
-              <div className="absolute inset-0 flex items-center">
-                <div className=" md:px-16 px-4 grid grid-cols-1 md:grid-cols-2 items-center gap-10">
-                  {/* Left Content */}
+              <div className="absolute inset-0 flex items-center z-20">
+                <div className="md:px-16 px-4 grid grid-cols-1 md:grid-cols-2 items-center gap-10 w-full">
                   <div className="text-white space-y-4">
-                    <span className="inline-block bg-primary px-3 py-1 text-sm rounded">
+                    <span
+                      onClick={() => {
+                        const code = item.code;
+
+                        if (
+                          navigator.clipboard &&
+                          navigator.clipboard.writeText
+                        ) {
+                          navigator.clipboard
+                            .writeText(code)
+                            .then(() => {
+                              setCopiedId(item._id);
+                              setTimeout(() => setCopiedId(null), 2000);
+                            })
+                            .catch((err) => {
+                              console.error("Clipboard API failed:", err);
+                              fallbackCopy(code);
+                            });
+                        } else {
+                          fallbackCopy(code);
+                        }
+
+                        function fallbackCopy(text) {
+                          const textArea = document.createElement("textarea");
+                          textArea.value = text;
+
+                          textArea.style.top = "0";
+                          textArea.style.left = "0";
+                          textArea.style.position = "fixed";
+
+                          document.body.appendChild(textArea);
+                          textArea.focus();
+                          textArea.select();
+
+                          try {
+                            const successful = document.execCommand("copy");
+                            if (successful) {
+                              setCopiedId(item._id);
+                              setTimeout(() => setCopiedId(null), 2000);
+                            } else {
+                              alert(
+                                "Copy failed! Please copy manually: " + code
+                              );
+                            }
+                          } catch (err) {
+                            console.error("Fallback copy failed:", err);
+                            alert("Copy failed! Please copy manually: " + code);
+                          }
+
+                          document.body.removeChild(textArea);
+                        }
+                      }}
+                      className="relative inline-block bg-primary px-3 py-1 text-sm rounded cursor-pointer group select-none"
+                    >
                       Coupon Code: {item.code}
+                      <span className="absolute -top-8 left-1/2 -translate-x-1/2 scale-0 group-hover:scale-100 transition bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                        {copiedId === item._id ? "Copied!" : "Copy"}
+                      </span>
                     </span>
 
                     <h1 className="text-4xl md:text-5xl font-bold">
@@ -56,7 +111,7 @@ const Banner = () => {
                     <p className="text-lg">
                       Save{" "}
                       <span className="font-semibold">
-                        ${item.discountValue}
+                        {item?.discountType === "PERCENTAGE" ? `${item.discountValue}%` : `$${item.discountValue}`}
                       </span>
                     </p>
 
@@ -77,7 +132,6 @@ const Banner = () => {
                     </Link>
                   </div>
 
-                  {/* Right Space */}
                   <div className="hidden md:block" />
                 </div>
               </div>
