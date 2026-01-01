@@ -116,6 +116,17 @@ const useApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["host"],
     }),
+
+    
+    deleteUserAccount: builder.mutation({
+      query: () => {
+        return {
+          url: `/users/profile`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
   }),
 });
 
@@ -132,4 +143,5 @@ export const {
   useRegisterLoginMutation,
   useVerifyRegisterOtpMutation,
   useResendOtpMutation,
+  useDeleteUserAccountMutation
 } = useApi;

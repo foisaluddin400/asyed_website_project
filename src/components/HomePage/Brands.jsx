@@ -72,7 +72,7 @@ const Brands = () => {
               <div className="">
                 <Link href={`/allProduct?brand=${item._id}`}>
                   <div className="relative w-[110px] h-[110px]">
-                    <Image
+                    <img
                       src={`${imageUrl}${item?.brandLogo}`}
                       alt={item.brandName}
                       layout="fill"

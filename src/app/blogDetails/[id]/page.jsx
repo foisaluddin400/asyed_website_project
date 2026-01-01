@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import { useRouter } from "next/router";
 
@@ -7,16 +7,21 @@ import cover from "../../../../public/img/cover.png";
 import { imageUrl } from "@/redux/Api/baseApi";
 import { useGetSingleBlogsQuery } from "@/redux/Api/blogApi";
 import { useParams } from "next/navigation";
+import { Navigate } from "@/components/Navigate";
 
 const BlogDetails = () => {
-   const params = useParams();
+  const params = useParams();
 
-  const { data: singleBlogData, isLoading } = useGetSingleBlogsQuery({ id: params?.id  });
+  const { data: singleBlogData, isLoading } = useGetSingleBlogsQuery({
+    id: params?.id,
+  });
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-[80vh]">
-        <Spin size="large" />
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
       </div>
     );
   }
@@ -26,12 +31,12 @@ const BlogDetails = () => {
   return (
     <div>
       {/* Banner */}
-       <div
-             className="relative bg-cover bg-center py-28 text-white"
-             style={{ backgroundImage: `url(${cover.src})` }}
-           >
-             {/* Overlay */}
-             <div className="absolute inset-0 bg-gradient-to-r from-black via-black to-black opacity-40"></div>
+      <div
+        className="relative bg-cover bg-center py-28 text-white"
+        style={{ backgroundImage: `url(${cover.src})` }}
+      >
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black to-black opacity-40"></div>
         <div className="relative z-10 container m-auto items-center h-full">
           <h1 className="md:text-5xl text-3xl font-semibold leading-tight">
             The Custom Tee Blog
@@ -44,13 +49,16 @@ const BlogDetails = () => {
         </div>
       </div>
 
+
+
       {/* Blog Content */}
-      <div className="grid grid-cols-1 md:grid-cols-2 container m-auto py-11 gap-7">
+      <div className=" container m-auto py-11 ">
+        <Navigate title={'Blog Details'}></Navigate>
         {blog?.imageUrl && (
           <img
             src={`${imageUrl}${blog.imageUrl}`}
             alt={blog.title}
-            className="w-full object-cover rounded mb-6"
+            className="w-full h-96 object-cover rounded mb-6"
           />
         )}
 

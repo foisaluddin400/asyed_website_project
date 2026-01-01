@@ -143,8 +143,7 @@ const blog = baseApi.injectEndpoints({
       invalidatesTags: ["updateProfile"],
     }),
 
-
- applyCoupon: builder.mutation({
+    applyCoupon: builder.mutation({
       query: (data) => {
         return {
           url: "/carts/apply-coupon",
@@ -155,8 +154,7 @@ const blog = baseApi.injectEndpoints({
       invalidatesTags: ["updateProfile"],
     }),
 
-
-     removeCoupon: builder.mutation({
+    removeCoupon: builder.mutation({
       query: () => {
         return {
           url: "/carts/remove-coupon",
@@ -186,6 +184,31 @@ const blog = baseApi.injectEndpoints({
       },
       invalidatesTags: ["updateProfile"],
     }),
+
+    addCustomarReview: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/review",
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
+
+    updateCustomarReview: builder.mutation({
+      query: ({ data, id }) => {
+        return {
+          url: `/review/${id}`,
+          method: "PUT",
+          body: data,
+        };
+      },
+      invalidatesTags: ["updateProfile"],
+    }),
+
+  
+
     getCart: builder.query({
       query: () => {
         return {
@@ -196,7 +219,7 @@ const blog = baseApi.injectEndpoints({
       providesTags: ["updateProfile"],
     }),
 
-     getIcon: builder.query({
+    getIcon: builder.query({
       query: ({ page, limit, search }) => {
         return {
           url: `/icons?search=${search}&page=${page}&limit=${limit}`,
@@ -205,8 +228,6 @@ const blog = baseApi.injectEndpoints({
       },
       providesTags: ["updateProfile"],
     }),
-
-    
 
     updateCartItem: builder.mutation({
       query: ({ data, id }) => {
@@ -383,5 +404,7 @@ export const {
   useGetSingleProductReviewQuery,
   useApplyCouponMutation,
   useRemoveCouponMutation,
-  useGetIconQuery
+  useGetIconQuery,
+  useAddCustomarReviewMutation,
+  useUpdateCustomarReviewMutation,
 } = blog;

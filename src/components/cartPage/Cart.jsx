@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { Shirt, Sparkles, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   useDeleteCartMutation,
@@ -17,6 +17,7 @@ import { Spin, Modal, Checkbox } from "antd";
 const Cart = () => {
   const router = useRouter();
   const { data: cartData, isLoading, isError } = useGetCartQuery();
+  console.log(cartData)
 
   const [updateSelected, { isLoading: isUpdatingSelection }] = useUpdateCartItemMutation();
   const [deleteCartData] = useDeleteCartMutation();
@@ -81,9 +82,45 @@ const Cart = () => {
   const openOrderModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  if (isLoading) return <p className="text-center py-6">Loading...</p>;
+  if (isLoading) return <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </div>;
   if (isError) return <p className="text-center py-6 text-red-500">Error loading cart</p>;
-  if (!cartData?.data?.items?.length) return <p className="text-center py-6">No items in cart</p>;
+  if (!cartData?.data?.items?.length) return <div className="text-center py-16 px-6">
+          <div className="mx-auto max-w-md">
+            {/* Illustration */}
+            <div className="mb-8 relative">
+              <div className="mx-auto w-48 h-48 bg-primary/10 rounded-full flex items-center justify-center">
+                <Shirt className="w-24 h-24 text-primary/60" />
+              </div>
+              <div className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center animate-pulse">
+                <Sparkles className="w-8 h-8 text-yellow-600" />
+              </div>
+            </div>
+
+            {/* Text */}
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              No Cart Yet!
+            </h3>
+            <p className="text-gray-600 text-base md:text-lg mb-10 max-w-md mx-auto">
+              Start creating your custom designs and they will appear here in your personal collection.
+            </p>
+
+            {/* Action Button */}
+            <Link href="/allProduct">
+              <button className="bg-primary hover:bg-primary/90 transition-all transform hover:scale-105 text-white font-semibold px-8 py-4 rounded-xl text-lg flex items-center gap-3 mx-auto shadow-lg">
+                <Sparkles className="w-6 h-6" />
+                Start Shopping Now
+              </button>
+            </Link>
+
+            <p className="text-sm text-gray-500 mt-8">
+              Your saved designs will show up here once you create them.
+            </p>
+          </div>
+        </div>;
 
   // Calculate totals for selected items in modal
   const selectedCartItems = cartData.data.items.filter(
@@ -184,12 +221,11 @@ const Cart = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
-      <nav className="text-sm mb-4">
-        <span className="text-primary cursor-pointer" onClick={() => router.push("/")}>
-          All Product
-        </span>{" "}
-        &gt; <span className="text-primary">Clothing</span> &gt;{" "}
-        <span className="text-primary">T-Shirts</span>
+      <nav className=" mb-4 text-center ">
+        <span className="text-black text-2xl " >
+          Cart
+        </span>
+      
       </nav>
 
       {/* Cart Items */}

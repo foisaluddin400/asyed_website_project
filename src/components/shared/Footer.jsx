@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { MarkIcon } from "./Image";
+import { useGetContactQuery } from "@/redux/Api/metaApi";
 
 // Reusable Social Icon Component
 const SocialIcon = ({ href, icon: Icon }) => (
@@ -17,6 +18,7 @@ const SocialIcon = ({ href, icon: Icon }) => (
 );
 
 export const Footer = () => {
+  const { data: contactData } = useGetContactQuery();
   return (
     <footer className="bg-gradient-to-b from-gray-900 to-black text-white py-16 mt-20">
       <div className="container mx-auto px-6 ">
@@ -35,15 +37,15 @@ export const Footer = () => {
             <div className="space-y-3 text-gray-400">
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary" />
-                <span>support@tshirtexpress.com</span>
+                <span>{contactData?.data?.email}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary" />
-                <span>+1 (555) 123-4567</span>
+                <span>{contactData?.data?.phone}</span>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-primary" />
-                <span>New York, NY 10001</span>
+                <span>{contactData?.data?.City}, {contactData?.data?.State}, {contactData?.data?.Country}</span>
               </div>
             </div>
           </div>

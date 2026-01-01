@@ -1,28 +1,38 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { useAddReOrderCheckoutMutation, useGetMyOrderQuery } from "@/redux/Api/metaApi";
+import {
+  useAddReOrderCheckoutMutation,
+  useGetMyOrderQuery,
+} from "@/redux/Api/metaApi";
 import { imageUrl } from "@/redux/Api/baseApi";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-
+import { Pagination } from "antd";
+import { Shirt, Sparkles } from "lucide-react";
+import Link from "next/link";
 
 const MyOrder = () => {
-  const { data: myOrderData, isLoading, isError } = useGetMyOrderQuery();
-  const [rePayment, { isLoading: isRePaying }] = useAddReOrderCheckoutMutation();
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
+  const {
+    data: myOrderData,
+    isLoading,
+    isError,
+  } = useGetMyOrderQuery({ page: currentPage, limit: pageSize });
+  const [rePayment, { isLoading: isRePaying }] =
+    useAddReOrderCheckoutMutation();
 
- 
   const handleRePayment = async (orderId) => {
     try {
       const response = await rePayment({
         id: orderId,
-        data: { status: "shipped" }, 
+        data: { status: "shipped" },
       }).unwrap();
 
       const paymentUrl = response.data.url;
       if (paymentUrl) {
-       
         window.location.href = paymentUrl;
       }
     } catch (error) {
@@ -40,18 +50,50 @@ const MyOrder = () => {
     );
 
   if (isError)
-    return <p className="text-center py-12 text-red-500">Failed to load orders</p>;
+    return (
+      <p className="text-center py-12 text-red-500">Failed to load orders</p>
+    );
 
   if (!myOrderData?.data?.length)
     return (
       <div className="text-center py-12">
-        <p className="text-gray-600 text-lg">You have no orders yet.</p>
+        <div className="text-center py-16 px-6">
+          <div className="mx-auto max-w-md">
+            {/* Illustration */}
+            <div className="mb-8 relative">
+              <div className="mx-auto w-48 h-48 bg-primary/10 rounded-full flex items-center justify-center">
+                <Shirt className="w-24 h-24 text-primary/60" />
+              </div>
+              <div className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center animate-pulse">
+                <Sparkles className="w-8 h-8 text-yellow-600" />
+              </div>
+            </div>
+
+            {/* Text */}
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              No Order Yet!
+            </h3>
+            <p className="text-gray-600 text-base md:text-lg mb-10 max-w-md mx-auto">
+              Start creating your custom designs and they will appear here in your personal collection.
+            </p>
+
+            {/* Action Button */}
+            <Link href="/allProduct">
+              <button className="bg-primary hover:bg-primary/90 transition-all transform hover:scale-105 text-white font-semibold px-8 py-4 rounded-xl text-lg flex items-center gap-3 mx-auto shadow-lg">
+                <Sparkles className="w-6 h-6" />
+                Start Shopping Now
+              </button>
+            </Link>
+
+           
+          </div>
+        </div>
       </div>
     );
-
+  const handlePageChange = (page) => setCurrentPage(page);
   return (
-    <div className="container mx-auto  py-2">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
+    <div className="container mx-auto  ">
+     
 
       <div className="space-y-4">
         {myOrderData.data.map((order) => (
@@ -64,10 +106,15 @@ const MyOrder = () => {
               <div className="flex flex-wrap justify-between items-center gap-4">
                 <div>
                   <p className="text-sm text-gray-600">
-                    Order ID: <span className="font-mono font-semibold">{order._id}</span>
+                    Order ID:{" "}
+                    <span className="font-mono font-semibold">{order._id}</span>
                   </p>
                   <p className="text-sm text-gray-600">
-                    Placed on: {format(new Date(order.orderDate), "MMM dd, yyyy 'at' h:mm a")}
+                    Placed on:{" "}
+                    {format(
+                      new Date(order.orderDate),
+                      "MMM dd, yyyy 'at' h:mm a"
+                    )}
                   </p>
                 </div>
                 <div className="flex gap-3">
@@ -110,7 +157,7 @@ const MyOrder = () => {
                     {/* Product Image */}
                     <div className="relative flex-shrink-0">
                       <div className="w-28 h-28 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
-                        <Image
+                        <img
                           src={`${imageUrl}${thumbnail}`}
                           alt={product.productName}
                           width={112}
@@ -127,7 +174,10 @@ const MyOrder = () => {
                           {product.productName}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          Brand: <span className="font-medium">{product.brand.brandName}</span>
+                          Brand:{" "}
+                          <span className="font-medium">
+                            {product.brand.brandName}
+                          </span>
                         </p>
                       </div>
 
@@ -140,14 +190,21 @@ const MyOrder = () => {
                           const colorName = variant?.color?.name || "N/A";
 
                           return (
-                            <div key={vq.variant} className="border-t pt-3 first:border-t-0 first:pt-0">
+                            <div
+                              key={vq.variant}
+                              className="border-t pt-3 first:border-t-0 first:pt-0"
+                            >
                               {/* Color */}
                               <div className="flex items-center gap-2 mb-2">
                                 <div
                                   className="w-5 h-5 rounded-full border"
-                                  style={{ backgroundColor: variant?.color?.hexValue }}
+                                  style={{
+                                    backgroundColor: variant?.color?.hexValue,
+                                  }}
                                 />
-                                <p className="text-sm font-medium text-gray-800">{colorName}</p>
+                                <p className="text-sm font-medium text-gray-800">
+                                  {colorName}
+                                </p>
                               </div>
 
                               {/* Sizes with Price */}
@@ -158,11 +215,14 @@ const MyOrder = () => {
                                     className="flex items-center justify-between text-xs"
                                   >
                                     <span className="bg-gray-100 px-2 py-0.5 rounded">
-                                      {sq.size.name}: <strong>{sq.quantity}</strong>
+                                      {sq.size.name}:{" "}
+                                      <strong>{sq.quantity}</strong>
                                     </span>
                                     <span className="text-gray-600">
                                       {sq.price} × {sq.quantity} ={" "}
-                                      <strong className="text-gray-900">{sq.sizeTotal}</strong>
+                                      <strong className="text-gray-900">
+                                        {sq.sizeTotal}
+                                      </strong>
                                     </span>
                                   </div>
                                 ))}
@@ -172,7 +232,9 @@ const MyOrder = () => {
                               <div className="flex justify-end mt-2">
                                 <p className="text-sm font-medium text-gray-700">
                                   Variant Total:{" "}
-                                  <span className="text-primary font-bold">{vq.variantTotal}</span>
+                                  <span className="text-primary font-bold">
+                                    {vq.variantTotal}
+                                  </span>
                                 </p>
                               </div>
                             </div>
@@ -210,7 +272,9 @@ const MyOrder = () => {
                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <p className="text-sm text-gray-600">Order Total</p>
-                    <p className="text-2xl font-bold text-primary">{order.total}</p>
+                    <p className="text-2xl font-bold text-primary">
+                      {order.total}
+                    </p>
                   </div>
 
                   {/* Re Payment Button */}
@@ -232,6 +296,15 @@ const MyOrder = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div className="mt-4 flex justify-center">
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={myOrderData?.meta?.total || 0}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+        />
       </div>
     </div>
   );

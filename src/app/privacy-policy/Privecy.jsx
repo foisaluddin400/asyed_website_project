@@ -21,9 +21,7 @@ const PrivecyAndPolicy = () => {
               Privacy Policy
             </h1>
             <p className="pt-4 w-full md:w-1/2 ">
-              At [Your Brand Name], your privacy is our priority. This Privacy
-              Policy explains how we collect, use, and protect your personal
-              information when you use our website and services.
+              Your personal information is safe with us as you design, shop, and customize with confidence.
             </p>
           </div>
         </div>

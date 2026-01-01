@@ -36,7 +36,7 @@ const Apparel = () => {
             <div>
               <h2 className="text-2xl font-semibold">Category</h2>
               <p className="text-gray-600 text-sm md:block hidden">
-                Discover top opportunities curated for entrepreneurs.
+               Explore T-shirt categories made to match your style.
               </p>
             </div>
           </div>

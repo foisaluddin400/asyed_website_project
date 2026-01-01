@@ -3,9 +3,9 @@ import { baseApi } from "./baseApi";
 const blog = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getBlogs: builder.query({
-      query: () => {
+      query: ({ page, limit }) => {
         return {
-          url: `/blogs`,
+          url: `/blogs?page=${page}&limit=${limit}`,
           method: "GET",
         };
       },

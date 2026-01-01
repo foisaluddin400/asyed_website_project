@@ -83,7 +83,11 @@ export default function AddToDesign() {
 
   // ── Loading / Error UI ─────────────────────────────────
   if (loadingCart || loadingProduct)
-    return <p className="text-center py-6">Loading...</p>;
+    return <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </div>;
   if (errorCart || errorProduct)
     return <p className="text-center py-6 text-red-500">Error loading data</p>;
   if (!singleDesignData?.data || !singleAllColorData?.data)

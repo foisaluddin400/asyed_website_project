@@ -27,3 +27,21 @@ body {
 li{
   list-style: none;
 }
+
+
+/* Pagination buttons style */
+.ant-pagination-item {
+  border-radius: 10% !important; /* Make buttons circular */
+}
+
+/* Active pagination button */
+.ant-pagination-item-active {
+  background-color: #E63946 !important; /* Active background color */
+  border-color: #E63946 !important; 
+  ;/* Active border color */
+}
+
+/* Active pagination button text */
+.ant-pagination-item-active > a {
+  color: white !important; /* Ensure active text color is white */
+}

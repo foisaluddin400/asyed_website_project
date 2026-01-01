@@ -189,9 +189,19 @@ getPrivecy: builder.query({
       invalidatesTags: ["updateProfile"],
     }),
     getMyOrder: builder.query({
-      query: () => {
+      query: ({ page, limit }) => {
         return {
-          url: `/orders/my-orders`,
+          url: `/orders/my-orders?page=${page}&limit=${limit}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["updateProfile"],
+    }),
+
+    getCompleteOrders: builder.query({
+      query: ({ page, limit }) => {
+        return {
+          url: `/orders/complete-orders?page=${page}&limit=${limit}`,
           method: "GET",
         };
       },
@@ -249,5 +259,5 @@ export const {
   useGetMyReviewQuery,
   useAddReOrderCheckoutMutation,
   useGetAboutUsQuery,
-  useGetPrivecyQuery,useGetTermsQuery,useGetCouponQuery,useGetBannerQuery
+  useGetPrivecyQuery,useGetTermsQuery,useGetCouponQuery,useGetBannerQuery,useGetCompleteOrdersQuery
 } = meta;

@@ -34,7 +34,7 @@ export default function RecentDesign() {
   const hasAnyDesign = frontPreview || backPreview || rightPreview || leftPreview;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="">
       <div className="bg-white rounded-lg shadow-sm w-full container mx-auto p-6 md:p-10">
         {/* Header */}
         <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -45,7 +45,7 @@ export default function RecentDesign() {
                 Recent Design
               </h2>
               <p className="text-gray-600 text-sm mt-1 hidden md:block">
-                Discover top opportunities curated for entrepreneurs.
+              Check out the latest custom designs created by our community.
               </p>
             </div>
           </div>

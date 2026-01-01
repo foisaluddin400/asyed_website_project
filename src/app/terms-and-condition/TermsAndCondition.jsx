@@ -20,9 +20,7 @@ const TermsAndCondition = () => {
               Terms And Condition
             </h1>
             <p className="pt-4 w-full md:w-1/2 ">
-              At [Your Brand Name], your privacy is our priority. This Privacy
-              Policy explains how we collect, use, and protect your personal
-              information when you use our website and services.
+              Clear guidelines to ensure a safe, fair, and enjoyable custom T-shirt experience.
             </p>
           </div>
         </div>

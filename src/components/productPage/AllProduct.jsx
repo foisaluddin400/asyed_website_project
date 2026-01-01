@@ -1,6 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ChevronDown, Star, Menu, X, Search } from "lucide-react";
+import {
+  ChevronDown,
+  Star,
+  Menu,
+  X,
+  Search,
+  Shirt,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Pagination } from "antd";
@@ -8,6 +16,7 @@ import FiltersSidebar from "./FiltersSidebar";
 import { useGetAllBusinesFilterQuery } from "@/redux/Api/productApi";
 import { imageUrl } from "@/redux/Api/baseApi";
 import { useSearchParams, useRouter } from "next/navigation";
+import { FaStar } from "react-icons/fa";
 
 const AllProduct = () => {
   const searchParams = useSearchParams();
@@ -237,7 +246,7 @@ const AllProduct = () => {
                       >
                         <div className="relative bg-gray-50 py-6 flex justify-center">
                           <Link href={`/productDetails/${product._id}`}>
-                            <Image
+                            <img
                               src={`${imageUrl}${frontImage}`}
                               alt={product.productName}
                               width={128}
@@ -253,9 +262,7 @@ const AllProduct = () => {
                           )}
 
                           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="flex space-x-1 bg-white rounded-full p-1 shadow-lg">
-                            
-                            </div>
+                            <div className="flex space-x-1 bg-white rounded-full p-1 shadow-lg"></div>
                           </div>
                         </div>
 
@@ -279,10 +286,24 @@ const AllProduct = () => {
                             </div>
 
                             {/* Rating */}
-                            <div className="flex items-center gap-1 text-xs text-yellow-500">
+                            {/* <div className="flex items-center gap-1 text-xs text-yellow-500">
                               <Star className="h-3 w-3 fill-current" />
                               <span>{product.rating || 0}</span>
-                            </div>
+                            </div> */}
+
+<div className="flex items-center text-yellow-400 text-sm">
+              {Array.from({ length: 5 }, (_, i) => (
+                <FaStar
+                  key={i}
+                  className={
+                    i < Math.floor(product.rating) ? "text-yellow-400" : "text-gray-300"
+                  }
+                />
+              ))}
+              <span className="text-gray-500 ml-2">({product.reviewCount})</span>
+            </div>
+
+
                           </div>
                         </div>
                       </div>
@@ -302,30 +323,28 @@ const AllProduct = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="mx-auto w-24 h-24 mb-4 flex items-center justify-center">
-                <div className="text-gray-400 text-4xl">🔍</div>
+              <div className="text-center py-16 px-6">
+                <div className="mx-auto max-w-md">
+                  {/* Illustration */}
+                  <div className="mb-8 relative">
+                    <div className="mx-auto w-48 h-48 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Shirt className="w-24 h-24 text-primary/60" />
+                    </div>
+                    <div className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center animate-pulse">
+                      <Sparkles className="w-8 h-8 text-yellow-600" />
+                    </div>
+                  </div>
+
+                  {/* Text */}
+                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                    No Product Yet!
+                  </h3>
+                  <p className="text-gray-600 text-base md:text-lg mb-10 max-w-md mx-auto">
+                    Start creating your custom designs and they will appear here
+                    in your personal collection.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {searchParams.get("search")
-                  ? "No products found"
-                  : "No products available"}
-              </h3>
-              <p className="text-gray-500 mb-6">
-                {searchParams.get("search")
-                  ? `No products match "${searchParams.get(
-                      "search"
-                    )}". Try different keywords.`
-                  : "Browse our categories to discover amazing products."}
-              </p>
-              {searchParams.get("search") && (
-                <button
-                  onClick={handleClearSearch}
-                  className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors mr-3"
-                >
-                  Clear Search
-                </button>
-              )}
-            
             </div>
           )}
         </main>

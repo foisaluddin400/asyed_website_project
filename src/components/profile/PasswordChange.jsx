@@ -39,11 +39,9 @@ const PasswordChange = () => {
   };
 
   return (
-    <div className="flex justify-center py-8">
-      <Card className="w-full max-w-lg shadow-lg">
-        <h2 className="text-2xl font-semibold mb-6 text-center">
-          Change Password
-        </h2>
+    <div className="  max-w-2xl m-auto">
+      <div className="">
+      
 
         {/* Optional inline error */}
         {passError && (
@@ -65,6 +63,7 @@ const PasswordChange = () => {
             ]}
           >
             <Input.Password
+            className='py-3'
               placeholder="Enter old password"
               size="large"
             />
@@ -80,6 +79,7 @@ const PasswordChange = () => {
             ]}
           >
             <Input.Password
+            className='py-3'
               placeholder="Enter new password"
               size="large"
             />
@@ -105,6 +105,7 @@ const PasswordChange = () => {
             ]}
           >
             <Input.Password
+            className='py-3'
               placeholder="Confirm new password"
               size="large"
             />
@@ -112,19 +113,19 @@ const PasswordChange = () => {
 
           {/* Submit */}
           <Form.Item>
-            <Button
+            <button
               type="primary"
               htmlType="submit"
               size="large"
               loading={isLoading}
-              className="w-full"
-              style={{ backgroundColor: '#E63946', borderColor: '#E63946' }}
+              className="w-full bg-[#E63946] text-white py-3 rounded-md"
+              
             >
               Save Change
-            </Button>
+            </button>
           </Form.Item>
         </Form>
-      </Card>
+      </div>
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { useParams, useRouter } from "next/navigation";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 
-
 import ReletedProduct from "@/components/productPage/ReletedProduct";
 import ReviewDetails from "@/components/productPage/ReviewDetails";
 import { useGetSingleProductQuery } from "@/redux/Api/productApi";
@@ -17,41 +16,57 @@ import { toast } from "react-toastify";
 
 export default function ProductDetails() {
   const params = useParams();
-const router = useRouter();
-const accessToken = useSelector((state) => state.logInUser?.token);
+  const router = useRouter();
+  const accessToken = useSelector((state) => state.logInUser?.token);
   const id = params?.id;
-  const { data: singleProductData, isLoading, isError } = useGetSingleProductQuery({ id });
-console.log(id)
+  const {
+    data: singleProductData,
+    isLoading,
+    isError,
+  } = useGetSingleProductQuery({ id });
+  console.log(id);
   const splideRef = useRef(null);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  if (isLoading) return <p className="text-center py-6">Loading...</p>;
-  if (isError) return <p className="text-center py-6 text-red-500">Error loading product</p>;
-  if (!singleProductData?.data) return <p className="text-center py-6">No product found</p>;
+  if (isLoading) return <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </div>;
+  if (isError)
+    return (
+      <p className="text-center py-6 text-red-500">Error loading product</p>
+    );
+  if (!singleProductData?.data)
+    return <p className="text-center py-6">No product found</p>;
 
   const product = singleProductData.data;
   const variants = product.variants || [];
   const selectedVariant = variants[selectedVariantIndex] || {};
-const handleStartDesigning = () => {
-  if (!accessToken) {
-    toast.info('Please sign in to start designing.');
-    router.push(`/signIn?redirect=${encodeURIComponent(window.location.pathname)}`);
-    return;
-  }
-  router.push(`/customizeDesign/${product?._id}`);
-};
+  const handleStartDesigning = () => {
+    if (!accessToken) {
+      toast.info("Please sign in to start designing.");
+      router.push(
+        `/signIn?redirect=${encodeURIComponent(window.location.pathname)}`
+      );
+      return;
+    }
+    router.push(`/customizeDesign/${product?._id}`);
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       {/* 🧭 Breadcrumb */}
       <nav className="text-sm mb-4">
-        <span className="text-primary cursor-pointer" onClick={() => router.push("/allProduct")}>
+        <span
+          className="text-primary cursor-pointer"
+          onClick={() => router.push("/allProduct")}
+        >
           All Product
         </span>{" "}
-        &gt;{" "}
-        <span className="text-primary">{product?.category?.name}</span> &gt;{" "}
-        <span className="text-primary">{product?.subcategory?.name}</span>
+        &gt; <span className="text-primary">{product?.category?.name}</span>{" "}
+        &gt; <span className="text-primary">{product?.subcategory?.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -84,7 +99,12 @@ const handleStartDesigning = () => {
               pagination: false,
             }}
           >
-           {[selectedVariant.frontImage, selectedVariant.backImage,selectedVariant.rightImage ,selectedVariant.leftImage].map(
+            {[
+              selectedVariant.frontImage,
+              selectedVariant.backImage,
+              selectedVariant.rightImage,
+              selectedVariant.leftImage,
+            ].map(
               (img, i) =>
                 img && (
                   <SplideSlide key={i}>
@@ -112,7 +132,9 @@ const handleStartDesigning = () => {
                 className="w-10 h-10 object-contain"
               />
             )}
-            <span className="text-gray-600 text-sm">{product.brand?.brandName}</span>
+            <span className="text-gray-600 text-sm">
+              {product.brand?.brandName}
+            </span>
           </div>
 
           {/* 🛍 Title */}
@@ -120,18 +142,25 @@ const handleStartDesigning = () => {
 
           {/* 💲 Price */}
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-xl font-bold text-primary">${product.discountedPrice}</span>
+            <span className="text-xl font-bold text-primary">
+              ${product.discountedPrice}
+            </span>
             {product.discountPercentage > 0 && (
               <>
-                <span className="line-through text-gray-500">${product.price}</span>
-                <span className="text-green-600">-{product.discountPercentage}%</span>
+                <span className="line-through text-gray-500">
+                  ${product.price}
+                </span>
+                <span className="text-green-600">
+                  -{product.discountPercentage}%
+                </span>
               </>
             )}
           </div>
 
           {/* 📦 Stock */}
           <p className="text-sm mb-4">
-            Stock Status: <span className="font-medium">{selectedVariant.stockStatus}</span>
+            Stock Status:{" "}
+            <span className="font-medium">{selectedVariant.stockStatus}</span>
           </p>
 
           {/* 🎨 Color Options */}
@@ -179,14 +208,17 @@ const handleStartDesigning = () => {
 
           {/* 🚀 Buttons */}
           <div className="flex gap-4 mb-6">
-             <Link href={`/addToCart/${product?._id}`}><button className="bg-primary hover:bg-red-600 text-white px-8 py-3 rounded font-medium">Add To Cart</button></Link>
-          <button
-      onClick={handleStartDesigning}
-      className="bg-primary hover:bg-red-600 text-white px-8 py-3 rounded font-medium"
-    >
-      START DESIGNING →
-    </button>
-           
+            <Link href={`/addToCart/${product?._id}`}>
+              <button className="bg-primary hover:bg-red-600 text-white px-8 py-3 rounded font-medium">
+                Add To Cart
+              </button>
+            </Link>
+            <button
+              onClick={handleStartDesigning}
+              className="bg-primary hover:bg-red-600 text-white px-8 py-3 rounded font-medium"
+            >
+              START DESIGNING →
+            </button>
           </div>
 
           {/* 📋 Short Description */}
@@ -218,8 +250,8 @@ const handleStartDesigning = () => {
       />
 
       {/* 🛒 Related + Review */}
-      <ReletedProduct id={id}/>
-      <ReviewDetails id={id}/>
+      <ReletedProduct id={id} />
+      <ReviewDetails id={id} />
     </div>
   );
 }

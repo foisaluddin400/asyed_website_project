@@ -163,7 +163,7 @@ const navItems = [
       {/* Top Banner */}
       <div className="bg-primary border-b border-gray-400 text-white py-3 hidden md:block">
         <div className="container mx-auto flex justify-between items-center text-sm">
-          <span>Welcome to Shop Name online eCommerce store.</span>
+          <span>Welcome to T-Shirts Express online e-commerce store.</span>
           <div className="flex items-center gap-2">
             <span>Follow us:</span>
             <FaTwitter />

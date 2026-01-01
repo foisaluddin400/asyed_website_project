@@ -1,57 +1,113 @@
-'use client'
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+import Image from "next/image";
 import cover from "../../../public/img/cover.png";
-import { EyeIcon } from "lucide-react";
+import { Eye } from "lucide-react";
 import Link from "next/link";
 import { useGetBlogsQuery } from "@/redux/Api/blogApi";
 import { imageUrl } from "@/redux/Api/baseApi";
+import { Pagination } from "antd";
 
 const BlogPage = () => {
-  const { data: blogData } = useGetBlogsQuery();
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  const { data: blogData, isLoading } = useGetBlogsQuery({
+    page: currentPage,
+    limit: pageSize,
+  });
+
+  const handlePageChange = (page) => setCurrentPage(page);
 
   return (
-    <div>
-      {/* Banner */}
-       <div
-             className="relative bg-cover bg-center py-28 text-white"
-             style={{ backgroundImage: `url(${cover.src})` }}
-           >
-             {/* Overlay */}
-             <div className="absolute inset-0 bg-gradient-to-r from-black via-black to-black opacity-40"></div>
-     
-             <div className="relative z-10 container mx-auto flex flex-col justify-center h-full">
-               <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
-                 Blogs
-               </h1>
-               <p className="pt-4 w-full md:w-1/2">
-                 We started as a small team of creatives and developers who were
-                 frustrated by the limitations of traditional online shopping. Why
-                 settle for generic products when you can design your own?
-               </p>
-             </div>
-           </div>
+    <div className=" ">
+      {/* Hero Banner */}
+      <div
+        className="relative bg-cover bg-center h-96 md:h-[28rem] flex items-center"
+        style={{ backgroundImage: `url(${cover.src})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
 
-      {/* Blog Grid */}
-      <div className="container mx-auto py-16 px-4 md:px-0">
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6">
-          {blogData?.data?.map((blog) => (
-            <div key={blog._id} className="border rounded p-2 flex flex-col">
-              <img
-                src={`${imageUrl}${blog.imageUrl}`}
-                alt={blog.title}
-                className="h-60 w-full object-cover rounded"
-              />
-              <h3 className="font-semibold mt-3 line-clamp-2">{blog.title}</h3>
-              <div className="flex justify-end gap-2 mt-4">
-                <Link href={`/blogDetails/${blog._id}`}>
-                  <div className="bg-sky-500 cursor-pointer text-white py-1 px-3 rounded">
-                    <EyeIcon />
-                  </div>
-                </Link>
-              </div>
-            </div>
-          ))}
+        <div className="relative z-10 container mx-auto px-6 md:px-12">
+          <div className="max-w-3xl text-white">
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+              Our Blogs
+            </h1>
+            <p className="mt-6 text-lg md:text-xl text-gray-200 leading-relaxed">
+              Ideas, inspiration, and stories behind custom T-shirt design.
+            </p>
+          </div>
         </div>
+      </div>
+
+      {/* Blog Grid Section */}
+      <div className="container mx-auto px-6 md:px-12 py-16 md:py-24">
+      
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-primary mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading blogs...</p>
+          </div>
+        ) : (
+          <>
+            <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-10">
+              {blogData?.data?.length > 0 ? (
+                blogData.data.map((blog) => (
+                  <Link href={`/blogDetails/${blog._id}`} key={blog._id}>
+                    <div className="group bg-white rounded-md  border  transition-all duration-500 overflow-hidden cursor-pointer">
+                      {/* Image */}
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={`${imageUrl}${blog.imageUrl}`}
+                          alt={blog.title}
+                          width={600}
+                          height={400}
+                          className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-6">
+                        <h3 className="text-xl font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors duration-300 mb-4">
+                          {blog.title}
+                        </h3>
+
+                        {/* Read More Button */}
+                        <div className="flex ">
+                          <div className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full  transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <Eye size={20} />
+                            <span className="font-medium">Read Article</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-20">
+                  <p className="text-2xl text-gray-500">No blogs available at the moment.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Pagination */}
+            {blogData?.meta?.total > pageSize && (
+              <div className="mt-16 flex justify-center">
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={blogData?.meta?.total || 0}
+                  onChange={handlePageChange}
+                  showSizeChanger={false}
+                  className="custom-pagination"
+                />
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

@@ -78,7 +78,7 @@ const ReletedProduct = ({ id }) => {
                 {/* Image */}
                 <Link href={`/productDetails/${item._id}`}>
                   <div className="flex justify-center mb-4 relative w-32 h-32">
-                    <Image
+                    <img
                       src={`${imageUrl}${item.thumbnail}`}
                       alt={item.productName}
                       layout="fill"

@@ -2,19 +2,25 @@
 
 import React, { useState, useEffect } from "react";
 import { IoCameraOutline } from "react-icons/io5";
-import { message, Spin } from "antd";
+import { Button, Input, message, Modal, Spin } from "antd";
 import MyOrder from "./MyOrder";
 import MyReview from "./MyReview";
 import PasswordChange from "./PasswordChange";
 import MyAddress from "./MyAddress";
 import {
+  useDeleteUserAccountMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
 } from "@/redux/Api/userApi";
 import { imageUrl } from "@/redux/Api/baseApi";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { usePathname, useRouter } from "next/navigation";
+import { logout } from "@/redux/features/auth/authSlice";
 
 export const ProfilePage = () => {
+  const [deleteAccount, { isLoading: deleting }] =
+    useDeleteUserAccountMutation();
   const { data: profileData, isLoading, refetch } = useGetProfileQuery();
   const profile = profileData?.data;
 
@@ -23,12 +29,25 @@ export const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [confirmInput, setConfirmInput] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const dispatch = useDispatch();
 
+  // Check login from localStorage
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  console.log(isLoggedIn);
+  const token = useSelector((state) => state.logInUser?.token);
+  console.log(token);
+  useEffect(() => {
+    setIsLoggedIn(!!token);
+  }, []);
   useEffect(() => {
     if (profile) {
       setFirstName(profile.firstName || "");
@@ -69,6 +88,42 @@ export const ProfilePage = () => {
     }
   };
 
+  const handleDeleteClick = () => {
+    setDeleteModalVisible(true);
+
+    setConfirmInput("");
+  };
+
+  const confirmDelete = async () => {
+    if (confirmInput.toLowerCase() !== "delete") {
+      toast.error("Please type 'delete' to confirm");
+      return;
+    }
+
+    try {
+      const res = await deleteAccount().unwrap();
+
+      setDeleteModalVisible(false);
+
+      setProductToDelete(null);
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+      localStorage.removeItem("email");
+      localStorage.removeItem("rememberedCredentials");
+      dispatch(logout());
+      setIsLoggedIn(false);
+
+      setTimeout(() => {
+        window.location.href = "/signIn";
+      }, 300);
+
+      toast.success(res?.message || "Account deleted successfully");
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to delete product");
+    }
+  };
+
   const handleCancel = () => {
     if (profile) {
       setFirstName(profile.firstName || "");
@@ -81,8 +136,10 @@ export const ProfilePage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Spin size="large" tip="Loading profile..." />
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
       </div>
     );
   }
@@ -90,7 +147,7 @@ export const ProfilePage = () => {
   const tabs = [
     { key: "profile", label: "My Profile" },
     { key: "order", label: "My Orders" },
-    { key: "review", label: "My Reviews" },
+    { key: "review", label: "Complete Order" },
     { key: "address", label: "My Addresses" },
     { key: "password", label: "Change Password" },
   ];
@@ -98,14 +155,10 @@ export const ProfilePage = () => {
   return (
     <div className="  pt-5">
       <div className=" mx-auto px-4 container">
-        <h1 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-          My Account
-        </h1>
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Sidebar - Desktop */}
           <div className="hidden lg:block lg:col-span-3">
-            <div className="bg-white rounded-lg border p-6 sticky top-24">
+            <div className="bg-white rounded-lg border p-6 sticky top-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-6">
                 Manage My Account
               </h2>
@@ -114,7 +167,7 @@ export const ProfilePage = () => {
                   <button
                     key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 ${
+                    className={`w-full text-left px-4 py-3 rounded-md transition-all duration-200 ${
                       activeTab === tab.key
                         ? "bg-primary text-white font-medium shadow-md"
                         : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -124,6 +177,14 @@ export const ProfilePage = () => {
                   </button>
                 ))}
               </nav>
+              <div className="border-t mt-3">
+                <button
+                  onClick={() => handleDeleteClick()}
+                  className="border border-primary  text-primary w-full rounded-md py-3 mt-4"
+                >
+                  Delete Account
+                </button>
+              </div>
             </div>
           </div>
 
@@ -299,6 +360,55 @@ export const ProfilePage = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        title={<span className="text-red-600 font-semibold text-2xl">Are you sure you want to delete your account?</span>}
+        open={deleteModalVisible}
+        onCancel={() => setDeleteModalVisible(false)}
+        footer={[
+          <Button
+            key="cancel"
+            onClick={() => setDeleteModalVisible(false)}
+            disabled={deleting}
+          >
+            Cancel
+          </Button>,
+          <Button
+            key="delete"
+            type="primary"
+            danger
+            loading={deleting}
+            onClick={confirmDelete}
+            disabled={confirmInput.toLowerCase() !== "delete"}
+          >
+            Delete User
+          </Button>,
+        ]}
+        centered
+        width={420}
+      >
+        <div className="py-6">
+          <p className="text-gray-700 mb-4">
+            This action <strong>cannot be undone</strong>. This will permanently
+            delete the Aoount:{" "}
+            <span className="font-bold text-md ">
+              "{productToDelete?.name}"
+            </span>
+          </p>
+
+          <p className="text-sm text-gray-600 mb-4">
+            Please type <span className="font-bold text-red-600">delete</span>{" "}
+            to confirm:
+          </p>
+          <Input
+            placeholder="Type 'delete' here"
+            value={confirmInput}
+            onChange={(e) => setConfirmInput(e.target.value)}
+            className="text-lg"
+            autoFocus
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

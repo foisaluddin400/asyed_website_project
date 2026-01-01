@@ -27,8 +27,10 @@ const IndividualProduct = () => {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen text-gray-600 text-lg">
-        Loading designs...
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
       </div>
     );
 
@@ -44,7 +46,7 @@ const IndividualProduct = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 max-w-7xl">
+    <div className="container mx-auto px-4 py-10">
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
         My Design Collection
       </h1>
@@ -127,7 +129,7 @@ const IndividualProduct = () => {
                           key={idx}
                           className="w-full rounded-lg overflow-hidden border border-gray-200"
                         >
-                          <Image
+                          <img
                             src={`${imageUrl}${img}`}
                             alt={`Design view ${idx + 1}`}
                             width={1000}
