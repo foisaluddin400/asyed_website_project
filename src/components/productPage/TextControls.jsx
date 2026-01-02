@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import * as fabric from "fabric";
 
@@ -113,13 +113,25 @@ const TextControls = ({
     { value: "Verdana", label: "Verdana", category: "Sans Serif" },
     { value: "Trebuchet MS", label: "Trebuchet MS", category: "Sans Serif" },
     { value: "Gill Sans", label: "Gill Sans", category: "Sans Serif" },
-    { value: "Century Gothic", label: "Century Gothic", category: "Sans Serif" },
+    {
+      value: "Century Gothic",
+      label: "Century Gothic",
+      category: "Sans Serif",
+    },
     { value: "Arial Black", label: "Arial Black", category: "Sans Serif" },
     { value: "Tahoma", label: "Tahoma", category: "Sans Serif" },
     { value: "Times New Roman", label: "Times New Roman", category: "Serif" },
     { value: "Georgia", label: "Georgia", category: "Serif" },
-    { value: "Palatino Linotype", label: "Palatino Linotype", category: "Serif" },
-    { value: "Bookman Old Style", label: "Bookman Old Style", category: "Serif" },
+    {
+      value: "Palatino Linotype",
+      label: "Palatino Linotype",
+      category: "Serif",
+    },
+    {
+      value: "Bookman Old Style",
+      label: "Bookman Old Style",
+      category: "Serif",
+    },
     { value: "Garamond", label: "Garamond", category: "Serif" },
     { value: "Courier New", label: "Courier New", category: "Monospace" },
     { value: "Lucida Console", label: "Lucida Console", category: "Monospace" },
@@ -138,7 +150,11 @@ const TextControls = ({
     { value: "Montserrat", label: "Montserrat", category: "Sans Serif" },
     { value: "Poppins", label: "Poppins", category: "Sans Serif" },
     { value: "Raleway", label: "Raleway", category: "Sans Serif" },
-    { value: "Source Sans Pro", label: "Source Sans Pro", category: "Sans Serif" },
+    {
+      value: "Source Sans Pro",
+      label: "Source Sans Pro",
+      category: "Sans Serif",
+    },
     { value: "PT Sans", label: "PT Sans", category: "Sans Serif" },
     { value: "Ubuntu", label: "Ubuntu", category: "Sans Serif" },
     { value: "Noto Sans", label: "Noto Sans", category: "Sans Serif" },
@@ -174,7 +190,11 @@ const TextControls = ({
     { value: "Mukta", label: "Mukta", category: "Sans Serif" },
     { value: "Titillium Web", label: "Titillium Web", category: "Sans Serif" },
     { value: "Yantramanav", label: "Yantramanav", category: "Sans Serif" },
-    { value: "Red Hat Display", label: "Red Hat Display", category: "Sans Serif" },
+    {
+      value: "Red Hat Display",
+      label: "Red Hat Display",
+      category: "Sans Serif",
+    },
     { value: "Mulish", label: "Mulish", category: "Sans Serif" },
     { value: "Space Grotesk", label: "Space Grotesk", category: "Sans Serif" },
     { value: "Urbanist", label: "Urbanist", category: "Sans Serif" },
@@ -194,7 +214,11 @@ const TextControls = ({
     { value: "EB Garamond", label: "EB Garamond", category: "Serif" },
     { value: "Noto Serif", label: "Noto Serif", category: "Serif" },
     { value: "Source Serif Pro", label: "Source Serif Pro", category: "Serif" },
-    { value: "Libre Baskerville", label: "Libre Baskerville", category: "Serif" },
+    {
+      value: "Libre Baskerville",
+      label: "Libre Baskerville",
+      category: "Serif",
+    },
     { value: "Domine", label: "Domine", category: "Serif" },
     { value: "Alegreya", label: "Alegreya", category: "Serif" },
     { value: "Cormorant", label: "Cormorant", category: "Serif" },
@@ -203,7 +227,11 @@ const TextControls = ({
     { value: "Arvo", label: "Arvo", category: "Serif" },
     { value: "Zilla Slab", label: "Zilla Slab", category: "Serif" },
     { value: "Literata", label: "Literata", category: "Serif" },
-    { value: "Gentium Book Basic", label: "Gentium Book Basic", category: "Serif" },
+    {
+      value: "Gentium Book Basic",
+      label: "Gentium Book Basic",
+      category: "Serif",
+    },
     { value: "Ibarra Real Nova", label: "Ibarra Real Nova", category: "Serif" },
     { value: "Sorts Mill Goudy", label: "Sorts Mill Goudy", category: "Serif" },
     { value: "Neuton", label: "Neuton", category: "Serif" },
@@ -231,7 +259,11 @@ const TextControls = ({
     { value: "Patua One", label: "Patua One", category: "Display" },
     { value: "Archivo Black", label: "Archivo Black", category: "Display" },
     { value: "Creepster", label: "Creepster", category: "Display" },
-    { value: "Fredericka the Great", label: "Fredericka the Great", category: "Display" },
+    {
+      value: "Fredericka the Great",
+      label: "Fredericka the Great",
+      category: "Display",
+    },
     { value: "Special Elite", label: "Special Elite", category: "Display" },
     { value: "Monoton", label: "Monoton", category: "Display" },
     { value: "Bungee", label: "Bungee", category: "Display" },
@@ -248,28 +280,68 @@ const TextControls = ({
     // Google Fonts - Handwriting
     { value: "Pacifico", label: "Pacifico", category: "Handwriting" },
     { value: "Amatic SC", label: "Amatic SC", category: "Handwriting" },
-    { value: "Shadows Into Light", label: "Shadows Into Light", category: "Handwriting" },
-    { value: "Dancing Script", label: "Dancing Script", category: "Handwriting" },
+    {
+      value: "Shadows Into Light",
+      label: "Shadows Into Light",
+      category: "Handwriting",
+    },
+    {
+      value: "Dancing Script",
+      label: "Dancing Script",
+      category: "Handwriting",
+    },
     { value: "Indie Flower", label: "Indie Flower", category: "Handwriting" },
     { value: "Caveat", label: "Caveat", category: "Handwriting" },
-    { value: "Permanent Marker", label: "Permanent Marker", category: "Handwriting" },
+    {
+      value: "Permanent Marker",
+      label: "Permanent Marker",
+      category: "Handwriting",
+    },
     { value: "Rock Salt", label: "Rock Salt", category: "Handwriting" },
-    { value: "Covered By Your Grace", label: "Covered By Your Grace", category: "Handwriting" },
+    {
+      value: "Covered By Your Grace",
+      label: "Covered By Your Grace",
+      category: "Handwriting",
+    },
     { value: "Great Vibes", label: "Great Vibes", category: "Handwriting" },
     { value: "Sacramento", label: "Sacramento", category: "Handwriting" },
-    { value: "Kaushan Script", label: "Kaushan Script", category: "Handwriting" },
+    {
+      value: "Kaushan Script",
+      label: "Kaushan Script",
+      category: "Handwriting",
+    },
     { value: "Satisfy", label: "Satisfy", category: "Handwriting" },
     { value: "Zeyada", label: "Zeyada", category: "Handwriting" },
     { value: "Tangerine", label: "Tangerine", category: "Handwriting" },
     { value: "Allura", label: "Allura", category: "Handwriting" },
     { value: "Parisienne", label: "Parisienne", category: "Handwriting" },
-    { value: "Berkshire Swash", label: "Berkshire Swash", category: "Handwriting" },
-    { value: "Homemade Apple", label: "Homemade Apple", category: "Handwriting" },
-    { value: "Cedarville Cursive", label: "Cedarville Cursive", category: "Handwriting" },
+    {
+      value: "Berkshire Swash",
+      label: "Berkshire Swash",
+      category: "Handwriting",
+    },
+    {
+      value: "Homemade Apple",
+      label: "Homemade Apple",
+      category: "Handwriting",
+    },
+    {
+      value: "Cedarville Cursive",
+      label: "Cedarville Cursive",
+      category: "Handwriting",
+    },
     { value: "Reenie Beanie", label: "Reenie Beanie", category: "Handwriting" },
-    { value: "Annie Use Your Telescope", label: "Annie Use Your Telescope", category: "Handwriting" },
+    {
+      value: "Annie Use Your Telescope",
+      label: "Annie Use Your Telescope",
+      category: "Handwriting",
+    },
     { value: "Coming Soon", label: "Coming Soon", category: "Handwriting" },
-    { value: "Just Another Hand", label: "Just Another Hand", category: "Handwriting" },
+    {
+      value: "Just Another Hand",
+      label: "Just Another Hand",
+      category: "Handwriting",
+    },
     { value: "Handlee", label: "Handlee", category: "Handwriting" },
     { value: "Gochi Hand", label: "Gochi Hand", category: "Handwriting" },
     { value: "Schoolbell", label: "Schoolbell", category: "Handwriting" },
@@ -277,12 +349,24 @@ const TextControls = ({
     { value: "Kalam", label: "Kalam", category: "Handwriting" },
     { value: "Neucha", label: "Neucha", category: "Handwriting" },
     { value: "Patrick Hand", label: "Patrick Hand", category: "Handwriting" },
-    { value: "Sue Ellen Francisco", label: "Sue Ellen Francisco", category: "Handwriting" },
-    { value: "Waiting for the Sunrise", label: "Waiting for the Sunrise", category: "Handwriting" },
+    {
+      value: "Sue Ellen Francisco",
+      label: "Sue Ellen Francisco",
+      category: "Handwriting",
+    },
+    {
+      value: "Waiting for the Sunrise",
+      label: "Waiting for the Sunrise",
+      category: "Handwriting",
+    },
     { value: "Marck Script", label: "Marck Script", category: "Handwriting" },
     // Google Fonts - Monospace
     { value: "Inconsolata", label: "Inconsolata", category: "Monospace" },
-    { value: "Source Code Pro", label: "Source Code Pro", category: "Monospace" },
+    {
+      value: "Source Code Pro",
+      label: "Source Code Pro",
+      category: "Monospace",
+    },
     { value: "Fira Code", label: "Fira Code", category: "Monospace" },
     { value: "Roboto Mono", label: "Roboto Mono", category: "Monospace" },
     { value: "Space Mono", label: "Space Mono", category: "Monospace" },
@@ -295,7 +379,11 @@ const TextControls = ({
     { value: "Victor Mono", label: "Victor Mono", category: "Monospace" },
     { value: "PT Mono", label: "PT Mono", category: "Monospace" },
     { value: "Cutive Mono", label: "Cutive Mono", category: "Monospace" },
-    { value: "Share Tech Mono", label: "Share Tech Mono", category: "Monospace" },
+    {
+      value: "Share Tech Mono",
+      label: "Share Tech Mono",
+      category: "Monospace",
+    },
   ];
 
   return (
@@ -457,20 +545,19 @@ const TextControls = ({
         <div>
           <label>Shadow Blur: {shadowBlur.toFixed(1)}</label>
           <input
-  type="range"
-  min="0"
-  max="20"
-  step="0.1"
-  value={shadowBlur}
-  onChange={(e) => {
-    const value = parseFloat(e.target.value) || 0;
-    setLocalShadowBlur(value);
-    setShadowBlur(value);
-    changeTextShadow("blur", value);
-  }}
-  className="w-full mt-4 h-2 rounded-full bg-gray-300 accent-blue-500 slider-thumb"
-/>
-
+            type="range"
+            min="0"
+            max="20"
+            step="0.1"
+            value={shadowBlur}
+            onChange={(e) => {
+              const value = parseFloat(e.target.value) || 0;
+              setLocalShadowBlur(value);
+              setShadowBlur(value);
+              changeTextShadow("blur", value);
+            }}
+            className="w-full mt-4 h-2 rounded-full bg-gray-300 accent-blue-500 slider-thumb"
+          />
         </div>
       </div>
       <div className="border p-2">
