@@ -123,16 +123,23 @@ const OrderDetails = () => {
   );
 
   const onFinish = async (values) => {
-    setLoading(true);
-    try {
-      const res = await applyCoupon({ code: values.code }).unwrap();
+  setLoading(true);
+  try {
+    const res = await applyCoupon({ code: values.code }).unwrap();
+
+    if (res?.success === false) {
+      toast.info(res?.message || "Coupon failed!");
+    } else {
       toast.success(res?.message || "Coupon applied successfully!");
-    } catch (err) {
-      toast.error(err?.data?.message || "Coupon failed!");
-    } finally {
-      setLoading(false);
     }
-  };
+
+  } catch (err) {
+    toast.error(err?.data?.message || "Coupon failed!");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleRemoveCoupon = async () => {
     setLoading(true);
@@ -166,7 +173,7 @@ const OrderDetails = () => {
       }).unwrap();
       console.log(res);
 
-      toast.success("Order placed successfully!");
+      toast.success(res?.message || "Payment Successfull");
       router.push(res.data.payment.url);
     } catch (err) {
       console.error(err);
@@ -176,11 +183,13 @@ const OrderDetails = () => {
 
   // ---------- LOADING STATES ----------
   if (cartLoading || addrLoading)
-    return <div className="container mx-auto px-4 py-6">
+    return (
+      <div className="container mx-auto px-4 py-6">
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
-      </div>;
+      </div>
+    );
   if (cartError)
     return <p className="text-center py-6 text-red-500">Error loading cart</p>;
 
