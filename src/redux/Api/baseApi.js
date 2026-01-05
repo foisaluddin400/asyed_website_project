@@ -2,7 +2,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://10.10.20.22:3001/api",
+  baseUrl: "https://api.tshirtsexpress.com/api",
   prepareHeaders: (headers, { getState }) => {
     const token = getState().logInUser?.token;
     if (token) {
