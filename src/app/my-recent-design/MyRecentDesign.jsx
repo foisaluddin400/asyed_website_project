@@ -4,6 +4,7 @@ import { ChevronLeft, Shirt, Sparkles } from "lucide-react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function RecentDesign() {
   const token = useSelector((state) => state.logInUser?.token);
@@ -66,7 +67,9 @@ export default function RecentDesign() {
                 <h3 className="text-sm font-semibold text-white bg-primary text-center py-3">
                   Front View
                 </h3>
-                <img
+                <Image
+                  width={1000}
+                        height={500}
                   src={frontPreview}
                   alt="Front Design"
                   className="w-full h-64 object-cover bg-gray-100"
@@ -79,7 +82,9 @@ export default function RecentDesign() {
                 <h3 className="text-sm font-semibold text-white bg-primary text-center py-3">
                   Back View
                 </h3>
-                <img
+                <Image
+                  width={1000}
+                        height={500}
                   src={backPreview}
                   alt="Back Design"
                   className="w-full h-64 object-cover bg-gray-100"
@@ -92,7 +97,9 @@ export default function RecentDesign() {
                 <h3 className="text-sm font-semibold text-white bg-primary text-center py-3">
                   Right View
                 </h3>
-                <img
+               <Image
+                  width={1000}
+                        height={500}
                   src={rightPreview}
                   alt="Right Design"
                   className="w-full h-64 object-cover bg-gray-100"
@@ -105,7 +112,9 @@ export default function RecentDesign() {
                 <h3 className="text-sm font-semibold text-white bg-primary text-center py-3">
                   Left View
                 </h3>
-                <img
+                 <Image
+                  width={1000}
+                        height={500}
                   src={leftPreview}
                   alt="Left Design"
                   className="w-full h-64 object-cover bg-gray-100"

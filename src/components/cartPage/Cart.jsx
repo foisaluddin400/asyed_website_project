@@ -13,6 +13,7 @@ import { imageUrl } from "@/redux/Api/baseApi";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { Spin, Modal, Checkbox } from "antd";
+import Image from "next/image";
 
 const Cart = () => {
   const router = useRouter();
@@ -391,7 +392,9 @@ const Cart = () => {
                   {isLoadingThis && <Spin size="small" className="ml-2" />}
                 </Checkbox>
 
-                <img
+                <Image
+                  width={1000}
+                        height={500}
                   src={`${imageUrl}${thumbnail}`}
                   alt={product.productName}
                   className="w-16 h-16 object-contain rounded"

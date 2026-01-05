@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { IoCameraOutline } from "react-icons/io5";
-import { Button, Input, message, Modal, Spin } from "antd";
+import { Button, Image, Input, message, Modal, Spin } from "antd";
 import MyOrder from "./MyOrder";
 import MyReview from "./MyReview";
 import PasswordChange from "./PasswordChange";
@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/redux/features/auth/authSlice";
+
 
 export const ProfilePage = () => {
   const [deleteAccount, { isLoading: deleting }] =
@@ -230,10 +231,13 @@ export const ProfilePage = () => {
                         <div className="relative">
                           {previewUrl ? (
                             // If there's a profile image (either uploaded preview or existing one)
-                            <img
+                            <Image
+                              width={130}
+                        height={130}
+                      
                               src={previewUrl}
                               alt="Profile"
-                              className="w-[130px] h-[130px] rounded-full object-cover ring-4 ring-gray-200 shadow-lg"
+                              className="w-[130px] h-[130px] rounded-md object-cover ring-4 ring-blue-100 shadow-lg"
                             />
                           ) : (
                             // Fallback: Show initials on primary background

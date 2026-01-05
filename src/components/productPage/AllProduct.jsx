@@ -246,7 +246,7 @@ const AllProduct = () => {
                       >
                         <div className="relative bg-gray-50 py-6 flex justify-center">
                           <Link href={`/productDetails/${product._id}`}>
-                            <img
+                            <Image
                               src={`${imageUrl}${frontImage}`}
                               alt={product.productName}
                               width={128}
@@ -291,19 +291,21 @@ const AllProduct = () => {
                               <span>{product.rating || 0}</span>
                             </div> */}
 
-<div className="flex items-center text-yellow-400 text-sm">
-              {Array.from({ length: 5 }, (_, i) => (
-                <FaStar
-                  key={i}
-                  className={
-                    i < Math.floor(product.rating) ? "text-yellow-400" : "text-gray-300"
-                  }
-                />
-              ))}
-              <span className="text-gray-500 ml-2">({product.reviewCount})</span>
-            </div>
-
-
+                            <div className="flex items-center text-yellow-400 text-sm">
+                              {Array.from({ length: 5 }, (_, i) => (
+                                <FaStar
+                                  key={i}
+                                  className={
+                                    i < Math.floor(product.rating)
+                                      ? "text-yellow-400"
+                                      : "text-gray-300"
+                                  }
+                                />
+                              ))}
+                              <span className="text-gray-500 ml-2">
+                                ({product.reviewCount})
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>

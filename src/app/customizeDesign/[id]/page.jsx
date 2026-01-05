@@ -218,19 +218,19 @@ export default function DesignPage() {
 
   const frontTshirtUrl = singleProduct?.data?.variants[selectedColorIndex]
     ?.frontImage
-    ? `${imageUrl}${singleProduct.data.variants[selectedColorIndex].frontImage}`
+    ? `${singleProduct.data.variants[selectedColorIndex].frontImage}`
     : "https://via.placeholder.com/700x700?text=Front+T-Shirt";
   const backTshirtUrl = singleProduct?.data?.variants[selectedColorIndex]
     ?.backImage
-    ? `${imageUrl}${singleProduct.data.variants[selectedColorIndex].backImage}`
+    ? `${singleProduct.data.variants[selectedColorIndex].backImage}`
     : "https://via.placeholder.com/700x700?text=Back+T-Shirt";
   const rightTshirtUrl = singleProduct?.data?.variants[selectedColorIndex]
     ?.rightImage
-    ? `${imageUrl}${singleProduct.data.variants[selectedColorIndex].rightImage}`
+    ? `${singleProduct.data.variants[selectedColorIndex].rightImage}`
     : "https://via.placeholder.com/700x700?text=Right+T-Shirt";
   const leftTshirtUrl = singleProduct?.data?.variants[selectedColorIndex]
     ?.leftImage
-    ? `${imageUrl}${singleProduct.data.variants[selectedColorIndex].leftImage}`
+    ? `${singleProduct.data.variants[selectedColorIndex].leftImage}`
     : "https://via.placeholder.com/700x700?text=Left+T-Shirt";
   const hasRightImage =
     singleProduct?.data?.variants[selectedColorIndex]?.rightImage?.trim() !==

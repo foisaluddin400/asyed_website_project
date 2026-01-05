@@ -53,7 +53,7 @@ const AccessoryGift = () => {
             <Link href={`/productDetails/${item._id}`}>
              <div className="flex justify-center">
                <div className=" mb-4 relative w-32 h-32">
-                <img
+                <Image
                   src={`${imageUrl}${item.thumbnail}`}
                   alt={item.productName}
                   layout="fill"

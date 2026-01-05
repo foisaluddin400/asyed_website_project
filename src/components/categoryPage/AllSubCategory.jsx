@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useGetSingleCategoryQuery } from "@/redux/Api/categoryApi";
 import { imageUrl } from "@/redux/Api/baseApi";
+import Image from "next/image";
 
 
 const AllSubCategory = () => {
@@ -43,7 +44,9 @@ const AllSubCategory = () => {
           >
             {/* Image */}
             <div className="relative h-56 flex justify-center items-center">
-              <img
+              <Image
+                width={1000}
+                        height={500}
                 src={`${imageUrl}${sub.imageUrl}`}
                 alt={sub.name}
                 className="h-40 w-auto object-contain group-hover:scale-110 transition-transform duration-300"

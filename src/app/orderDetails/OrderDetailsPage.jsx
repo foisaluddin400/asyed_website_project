@@ -16,6 +16,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import MyAddress from "@/components/profile/MyAddress";
 import { Form, Input, Spin } from "antd";
+import Image from "next/image";
 
 const OrderDetails = () => {
   const router = useRouter();
@@ -128,10 +129,11 @@ const OrderDetails = () => {
     const res = await applyCoupon({ code: values.code }).unwrap();
 
     if (res?.success === false) {
-      toast.info(res?.message || "Coupon failed!");
+      toast.warning(res?.message || "Coupon failed!");
     } else {
       toast.success(res?.message || "Coupon applied successfully!");
     }
+
 
   } catch (err) {
     toast.error(err?.data?.message || "Coupon failed!");
@@ -232,7 +234,9 @@ const OrderDetails = () => {
               <div key={item.itemId} className="mb-8 border rounded-lg p-4">
                 <div className="flex gap-4">
                   {/* Image */}
-                  <img
+                  <Image
+                    width={1000}
+                        height={500}
                     src={`${imageUrl}${leftImage}`}
                     alt="product"
                     className="w-24 h-24 object-contain rounded"

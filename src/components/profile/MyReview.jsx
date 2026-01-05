@@ -504,7 +504,7 @@ const handlePageChange = (page) => setCurrentPage(page);
               .map((review) => (
                 <div key={review?._id} className="bg-gray-50 rounded-lg p-5">
                   <div className="flex items-center gap-3 mb-4">
-                    <img
+                    <Image
                       src={`${imageUrl}${review?.user?.imageUrl}`}
                       alt={review?.user?.firstName}
                       width={48}
@@ -533,7 +533,7 @@ const handlePageChange = (page) => setCurrentPage(page);
                   {review?.images?.length > 0 && (
                     <div className="grid grid-cols-3 gap-2 mt-4">
                       {review?.images?.map((img, idx) => (
-                        <img
+                        <Image
                           key={idx}
                           src={`${imageUrl}${img}`}
                           alt="Review"

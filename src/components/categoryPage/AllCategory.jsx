@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useGetCategoryQuery } from "@/redux/Api/categoryApi";
 import { imageUrl } from "@/redux/Api/baseApi";
+import Image from "next/image";
 
 const AllCategory = () => {
   const { data: category } = useGetCategoryQuery();
@@ -25,7 +26,9 @@ const AllCategory = () => {
           >
             {/* Image */}
             <div className="relative h-56 flex justify-center items-center">
-              <img
+              <Image
+                width={1000}
+                        height={500}
                 src={`${imageUrl}${item?.imageUrl}`}
                 alt={item.name}
                 className="h-40 w-auto object-contain group-hover:scale-110 transition-transform duration-300"

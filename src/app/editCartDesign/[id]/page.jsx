@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useRef, useState, useEffect } from "react";
 import { X } from "lucide-react";
@@ -13,26 +13,27 @@ import {
 import { imageUrl } from "@/redux/Api/baseApi";
 import { Spin } from "antd";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function AddToDesign() {
   const params = useParams();
   const router = useRouter();
   const splideRef = useRef(null);
   const id = params?.id;
-  console.log(id)
+  console.log(id);
 
   const {
     data: singleDesignData,
     isLoading: loadingCart,
     isError: errorCart,
   } = useGetSingleCartQuery({ id });
-  console.log(singleDesignData)
+  console.log(singleDesignData);
   const [updateCart] = useUpdateCartItemMutation();
 
   const [selectedColors, setSelectedColors] = useState([]);
   const [removedVariants, setRemovedVariants] = useState([]); // ← NEW: Track removed
   const [showColorPopup, setShowColorPopup] = useState(false);
- const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   // ── Get product ID ─────────────────────────────────────
   const product = singleDesignData?.data?.product;
   const productId = product?._id;
@@ -42,10 +43,7 @@ export default function AddToDesign() {
     data: singleAllColorData,
     isLoading: loadingProduct,
     isError: errorProduct,
-  } = useGetSingleProductQuery(
-    { id: productId },
-    { skip: !productId }
-  );
+  } = useGetSingleProductQuery({ id: productId }, { skip: !productId });
 
   // ── DEBUG: Print full product data ─────────────────────
   useEffect(() => {
@@ -59,11 +57,17 @@ export default function AddToDesign() {
 
   // ── Initialize selectedColors from cart + merge with full sizes ──
   useEffect(() => {
-    if (singleDesignData?.data && selectedColors.length === 0 && allProductSizes.length > 0) {
+    if (
+      singleDesignData?.data &&
+      selectedColors.length === 0 &&
+      allProductSizes.length > 0
+    ) {
       const cartVariants = singleDesignData.data.variants || [];
 
       const init = cartVariants.map((v) => {
-        const cartSizeMap = new Map(v.sizeQuantities.map(s => [s.size, s.quantity]));
+        const cartSizeMap = new Map(
+          v.sizeQuantities.map((s) => [s.size, s.quantity])
+        );
         const fullSizes = allProductSizes.map((sz) => ({
           _id: sz._id,
           name: sz.name,
@@ -83,11 +87,13 @@ export default function AddToDesign() {
 
   // ── Loading / Error UI ─────────────────────────────────
   if (loadingCart || loadingProduct)
-    return <div className="container mx-auto px-4 py-6">
+    return (
+      <div className="container mx-auto px-4 py-6">
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
-      </div>;
+      </div>
+    );
   if (errorCart || errorProduct)
     return <p className="text-center py-6 text-red-500">Error loading data</p>;
   if (!singleDesignData?.data || !singleAllColorData?.data)
@@ -119,7 +125,7 @@ export default function AddToDesign() {
     ]);
 
     // Remove from removed list if it was removed before
-    setRemovedVariants((prev) => prev.filter(id => id !== variant._id));
+    setRemovedVariants((prev) => prev.filter((id) => id !== variant._id));
 
     setShowColorPopup(false);
   };
@@ -146,70 +152,74 @@ export default function AddToDesign() {
   };
 
   // ── UPDATE CART – INCLUDE REMOVED VARIANTS WITH sizeQuantities: [] ──
-// ── UPDATE CART – INCLUDE ALL SIZES (EVEN 0) + REMOVED VARIANTS ──
-const handleAddToDesign = () => {
-  if (selectedColors.length === 0 && removedVariants.length === 0) {
-    alert("Please select at least one color!");
-    return;
-  }
+  // ── UPDATE CART – INCLUDE ALL SIZES (EVEN 0) + REMOVED VARIANTS ──
+  const handleAddToDesign = () => {
+    if (selectedColors.length === 0 && removedVariants.length === 0) {
+      alert("Please select at least one color!");
+      return;
+    }
 
-  // 1. Active variants – SEND ALL SIZES (including 0)
-  const activeVariants = selectedColors.map((sel) => ({
-    variant: sel.variantId,
-    sizeQuantities: sel.sizes.map((s) => ({
-      size: s._id,
-      quantity: s.quantity, // ← No filtering! 0 is allowed
-    })),
-  }));
+    // 1. Active variants – SEND ALL SIZES (including 0)
+    const activeVariants = selectedColors.map((sel) => ({
+      variant: sel.variantId,
+      sizeQuantities: sel.sizes.map((s) => ({
+        size: s._id,
+        quantity: s.quantity, // ← No filtering! 0 is allowed
+      })),
+    }));
 
-  // 2. Removed variants → send with empty sizeQuantities
-  const removedVariantEntries = removedVariants.map((variantId) => ({
-    variant: variantId,
-    sizeQuantities: [],
-  }));
+    // 2. Removed variants → send with empty sizeQuantities
+    const removedVariantEntries = removedVariants.map((variantId) => ({
+      variant: variantId,
+      sizeQuantities: [],
+    }));
 
-  // 3. Combine both
-  const variantQuantities = [...activeVariants, ...removedVariantEntries];
+    // 3. Combine both
+    const variantQuantities = [...activeVariants, ...removedVariantEntries];
 
-  // 4. Calculate total quantity (only count > 0)
-  const totalQuantity = activeVariants.reduce(
-    (sum, v) =>
-      sum + v.sizeQuantities.reduce((acc, sq) => acc + (sq.quantity > 0 ? sq.quantity : 0), 0),
-    0
-  );
+    // 4. Calculate total quantity (only count > 0)
+    const totalQuantity = activeVariants.reduce(
+      (sum, v) =>
+        sum +
+        v.sizeQuantities.reduce(
+          (acc, sq) => acc + (sq.quantity > 0 ? sq.quantity : 0),
+          0
+        ),
+      0
+    );
 
-  if (totalQuantity === 0) {
-    toast.info("Please set quantity for at least one size!");
-    return;
-  }
+    if (totalQuantity === 0) {
+      toast.info("Please set quantity for at least one size!");
+      return;
+    }
 
-  const cartData = {
-    variantQuantities,
-    quantity: totalQuantity,
-    isSelected: true,
+    const cartData = {
+      variantQuantities,
+      quantity: totalQuantity,
+      isSelected: true,
+    };
+
+    console.log("Sending to API:", cartData);
+    setLoading(true);
+    updateCart({ data: cartData, id })
+      .unwrap()
+      .then((res) => {
+        toast.success("Cart updated successfully!");
+        setLoading(false);
+        console.log("Update response:", res);
+
+        // Clean UI: remove colors with ALL zero
+        setSelectedColors((prev) =>
+          prev.filter((c) => c.sizes.some((s) => s.quantity > 0))
+        );
+        setRemovedVariants([]);
+      })
+      .catch((err) => {
+        console.error("Update error:", err);
+        setLoading(false);
+        toast.error("Failed to update cart.");
+      });
   };
-
-  console.log("Sending to API:", cartData);
-setLoading(true)
-  updateCart({ data: cartData, id })
-    .unwrap()
-    .then((res) => {
-      toast.success("Cart updated successfully!");
-      setLoading(false)
-      console.log("Update response:", res);
-
-      // Clean UI: remove colors with ALL zero
-      setSelectedColors((prev) =>
-        prev.filter((c) => c.sizes.some((s) => s.quantity > 0))
-      );
-      setRemovedVariants([]);
-    })
-    .catch((err) => {
-      console.error("Update error:", err);
-      setLoading(false)
-      toast.error("Failed to update cart.");
-    });
-};
   // ── Totals ─────────────────────────────────────────────
   const totalQuantity = selectedColors.reduce(
     (sum, c) => sum + c.sizes.reduce((acc, sz) => acc + (sz.quantity || 0), 0),
@@ -229,11 +239,14 @@ setLoading(true)
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="text-sm mb-4">
-        <span className="text-primary cursor-pointer" onClick={() => router.push("/")}>
+        <span
+          className="text-primary cursor-pointer"
+          onClick={() => router.push("/")}
+        >
           All Product
         </span>{" "}
-        &gt; <span className="text-primary">Clothing</span>{" "}
-        &gt; <span className="text-primary">Jackat</span>
+        &gt; <span className="text-primary">Clothing</span> &gt;{" "}
+        <span className="text-primary">Jackat</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -260,11 +273,15 @@ setLoading(true)
                   img && (
                     <SplideSlide key={i}>
                       <div className="border">
-                        <img
+                        <Image
+                          width={1000}
+                          height={500}
                           src={`${imageUrl}${img}`}
                           alt={`Design ${i + 1}`}
                           className="h-[420px] w-full object-contain rounded-md"
-                          onError={(e) => (e.currentTarget.src = "/placeholder.png")}
+                          onError={(e) =>
+                            (e.currentTarget.src = "/placeholder.png")
+                          }
                         />
                       </div>
                     </SplideSlide>
@@ -292,7 +309,9 @@ setLoading(true)
           {/* Selected Colors */}
           <div className="space-y-6">
             {selectedColors.map((c) => {
-              const matched = cartVariants.find((v) => v.variantId === c.variantId);
+              const matched = cartVariants.find(
+                (v) => v.variantId === c.variantId
+              );
               return (
                 <div
                   key={c.variantId}
@@ -306,7 +325,7 @@ setLoading(true)
                   </button>
 
                   <div className="flex items-center gap-4">
-                    <img
+                    {/* <img
                       src={
                         matched?.displayImages?.frontImage
                           ? `${imageUrl}${matched.displayImages.frontImage}`
@@ -314,12 +333,17 @@ setLoading(true)
                       }
                       alt={c.color.name}
                       className="w-20 h-20 object-contain rounded-md"
-                      onError={(e) => (e.currentTarget.src = "/placeholder.png")}
-                    />
+                      onError={(e) =>
+                        (e.currentTarget.src = "/placeholder.png")
+                      }
+                    /> */}
                     <div>
-                      <h2 className="font-semibold text-gray-800">{product.productName}</h2>
+                      <h2 className="font-semibold text-gray-800">
+                        {product.productName}
+                      </h2>
                       <p className="text-gray-600 text-sm">
-                        Color: <span className="font-medium">{c.color.name}</span>
+                        Color:{" "}
+                        <span className="font-medium">{c.color.name}</span>
                       </p>
                     </div>
                     <div className="mt-5 text-right">
@@ -334,17 +358,25 @@ setLoading(true)
 
                   {/* Sizes */}
                   <div className="mt-4">
-                    <h3 className="text-sm font-medium text-gray-700 mb-2">ADULT</h3>
+                    <h3 className="text-sm font-medium text-gray-700 mb-2">
+                      ADULT
+                    </h3>
                     <div className="flex flex-wrap gap-3">
                       {c.sizes.map((sz) => (
                         <div key={sz._id} className="text-center">
-                          <p className="text-gray-600 text-sm mb-1">{sz.name}</p>
+                          <p className="text-gray-600 text-sm mb-1">
+                            {sz.name}
+                          </p>
                           <input
                             type="number"
                             min="0"
                             value={sz.quantity}
                             onChange={(e) =>
-                              handleQuantityChange(c.variantId, sz._id, e.target.value)
+                              handleQuantityChange(
+                                c.variantId,
+                                sz._id,
+                                e.target.value
+                              )
                             }
                             className="w-16 border rounded-md px-2 py-1 text-center text-sm focus:outline-blue-500"
                           />
@@ -357,7 +389,10 @@ setLoading(true)
                   <div className="mt-4 text-right text-sm font-medium text-gray-700">
                     Subtotal: $
                     {c.sizes
-                      .reduce((s, sz) => s + sz.quantity * product.discountedPrice, 0)
+                      .reduce(
+                        (s, sz) => s + sz.quantity * product.discountedPrice,
+                        0
+                      )
                       .toFixed(2)}
                   </div>
                 </div>
@@ -372,16 +407,13 @@ setLoading(true)
             </p>
             <p className="text-gray-700 font-medium">
               Total Price:{" "}
-              <span className="text-primary font-bold">${totalPrice.toFixed(2)}</span>
+              <span className="text-primary font-bold">
+                ${totalPrice.toFixed(2)}
+              </span>
             </p>
           </div>
 
-        
-
-
-
-
-<button
+          <button
             onClick={handleAddToDesign}
             className={`mt-5 px-6 py-3 rounded text-white flex justify-center items-center gap-2 transition-all duration-300 ${
               loading
@@ -399,12 +431,6 @@ setLoading(true)
               "Update Cart"
             )}
           </button>
-
-
-
-
-
-
         </div>
       </div>
 
@@ -423,12 +449,16 @@ setLoading(true)
             </h2>
             <div className="flex flex-wrap gap-3 justify-center">
               {allProductVariants.map((variant) => {
-                const isAdded = selectedColors.some((c) => c.variantId === variant._id);
+                const isAdded = selectedColors.some(
+                  (c) => c.variantId === variant._id
+                );
                 return (
                   <button
                     key={variant._id}
                     onClick={() => handleAddColor(variant)}
-                    style={{ backgroundColor: variant.color?.hexValue || "#ccc" }}
+                    style={{
+                      backgroundColor: variant.color?.hexValue || "#ccc",
+                    }}
                     className={`w-12 h-12 rounded-full border-2 transition-all ${
                       isAdded
                         ? "border-blue-500 scale-110"

@@ -33,9 +33,11 @@ const Banner = () => {
             <div className="relative w-full h-[500px] md:h-[600px]">
               {/* Background Image */}
               {/* Background Image */}
-              <img
+              <Image
                 src={`${imageUrl}${item.image}`}
                 alt={item.name}
+                width={1000}
+                height={500}
                 className="w-full h-[500px] md:h-[600px] object-cover"
               />
 

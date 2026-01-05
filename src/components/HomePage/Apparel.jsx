@@ -87,7 +87,7 @@ const Apparel = () => {
                 <Link href={`/allProduct?category=${item._id}`}>
                   <div className="flex justify-center">
                     <div className="bg-gray-50 border rounded-full flex items-center justify-center w-[180px] h-[180px] hover:shadow-lg transition-shadow">
-                      <img
+                      <Image
                         src={`${imageUrl}${item?.imageUrl}`}
                         alt={item?.name || "Category"}
                         width={110}

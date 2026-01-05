@@ -8,6 +8,7 @@ import { imageUrl } from "@/redux/Api/baseApi";
 import { useGetSingleBlogsQuery } from "@/redux/Api/blogApi";
 import { useParams } from "next/navigation";
 import { Navigate } from "@/components/Navigate";
+import Image from "next/image";
 
 const BlogDetails = () => {
   const params = useParams();
@@ -55,10 +56,12 @@ const BlogDetails = () => {
       <div className=" container m-auto py-11 ">
         <Navigate title={'Blog Details'}></Navigate>
         {blog?.imageUrl && (
-          <img
+          <Image
+            width={1000}
+                        height={500}
             src={`${imageUrl}${blog.imageUrl}`}
             alt={blog.title}
-            className="w-full h-96 object-cover rounded mb-6"
+            className="w-full h-[60vh] object-cover rounded mb-6"
           />
         )}
 

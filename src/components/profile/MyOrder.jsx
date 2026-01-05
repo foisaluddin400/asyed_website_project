@@ -157,7 +157,7 @@ const MyOrder = () => {
                     {/* Product Image */}
                     <div className="relative flex-shrink-0">
                       <div className="w-28 h-28 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
-                        <img
+                        <Image
                           src={`${imageUrl}${thumbnail}`}
                           alt={product.productName}
                           width={112}

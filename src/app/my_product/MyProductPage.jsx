@@ -129,7 +129,7 @@ const IndividualProduct = () => {
                           key={idx}
                           className="w-full rounded-lg overflow-hidden border border-gray-200"
                         >
-                          <img
+                          <Image
                             src={`${imageUrl}${img}`}
                             alt={`Design view ${idx + 1}`}
                             width={1000}

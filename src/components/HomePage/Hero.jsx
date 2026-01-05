@@ -71,7 +71,7 @@ const Hero = () => {
 
                 {/* Banner Image */}
                 <div className="relative w-full h-full">
-                  <img
+                  <Image
                     src={`${imageUrl}${banner.image}`}
                     alt={banner.title}
                     fill

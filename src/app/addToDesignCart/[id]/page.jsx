@@ -10,6 +10,7 @@ import { imageUrl } from "@/redux/Api/baseApi";
 import { Spin } from "antd";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import Image from "next/image";
 
 export default function AddToDesign() {
    const [loading, setLoading] = useState(false);
@@ -189,7 +190,9 @@ setLoading(true)
                 img && (
                   <SplideSlide key={i}>
                     <div className="border">
-                      <img
+                      <Image
+                        width={1000}
+                        height={500}
                         src={`${imageUrl}${img}`}
                         alt={`Design ${i + 1}`}
                         className="h-[420px] w-full object-contain rounded-md"
@@ -223,7 +226,9 @@ setLoading(true)
                   {(() => {
                     const matchedVariant = variants.find((v) => v._id === colorItem.variantId);
                     return (
-                      <img
+                      <Image
+                        width={1000}
+                        height={500}
                         src={`${imageUrl}${matchedVariant?.frontImage || ""}`}
                         alt={colorItem.color.name}
                         className="w-20 h-20 object-contain rounded-md"

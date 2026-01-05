@@ -59,7 +59,7 @@ const BlogPage = () => {
                     <div className="group bg-white rounded-md  border  transition-all duration-500 overflow-hidden cursor-pointer">
                       {/* Image */}
                       <div className="relative overflow-hidden">
-                        <img
+                        <Image
                           src={`${imageUrl}${blog.imageUrl}`}
                           alt={blog.title}
                           width={600}
