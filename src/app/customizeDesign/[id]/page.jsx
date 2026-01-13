@@ -198,7 +198,7 @@ export default function DesignPage() {
     isLoading: isProductLoading,
     error: productError,
   } = useGetSingleProductQuery({ id });
-  
+
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null); // Store the fabric canvas instance
   const isInitializingRef = useRef(false); // Prevent multiple initializations
@@ -245,7 +245,7 @@ export default function DesignPage() {
       : currentSide === "right"
       ? rightTshirtUrl
       : leftTshirtUrl;
-
+console.log(frontTshirtUrl)
   const [isAllSidesDesigned, setIsAllSidesDesigned] = useState(false);
 
   useEffect(() => {
@@ -307,7 +307,10 @@ export default function DesignPage() {
     });
   };
 
-  const addTextToCanvas = (canvasInstance, textString = "Double click to edit") => {
+  const addTextToCanvas = (
+    canvasInstance,
+    textString = "Double click to edit"
+  ) => {
     if (!canvasInstance) {
       console.error("Cannot add text: Canvas not available");
       toast.error("Cannot add text: Canvas not initialized.");
@@ -405,7 +408,7 @@ export default function DesignPage() {
       fabricCanvasRef.current = canvasInstance;
       isInitializingRef.current = false;
       console.log("Canvas initialized successfully");
-      
+
       return canvasInstance;
     } catch (error) {
       console.error("Fabric.js initialization error:", error);
@@ -417,7 +420,7 @@ export default function DesignPage() {
   // Single initialization effect
   useEffect(() => {
     let timeoutId;
-    
+
     const attemptInit = () => {
       if (fabricCanvasRef.current) {
         console.log("Canvas already initialized, skipping");
@@ -483,7 +486,13 @@ export default function DesignPage() {
       canvas.isDrawingMode = false;
       canvas.renderAll();
     }
-  }, [canvas, currentSide, selectedColorIndex, singleProduct, isProductLoading]);
+  }, [
+    canvas,
+    currentSide,
+    selectedColorIndex,
+    singleProduct,
+    isProductLoading,
+  ]);
 
   const base64ToBlob = (base64Data) => {
     try {
@@ -721,7 +730,7 @@ export default function DesignPage() {
       toast.error("Cannot add image: Canvas not initialized.");
       return;
     }
-    
+
     if (isSvg) {
       fabric.loadSVGFromURL(
         imageUrl,
@@ -750,23 +759,23 @@ export default function DesignPage() {
       fabric.Image.fromURL(
         imageUrl,
         (img) => {
-          if (img) {
-            img.set({
-              left: position.left,
-              top: position.top,
-              scaleX: 0.5,
-              scaleY: 0.5,
-            });
-
-            addDeleteControl(img, canvas);
-            canvas.add(img);
-            canvas.setActiveObject(img);
-            canvas.renderAll();
-            setSelectedTool("imageIcon");
-          } else {
+          if (!img) {
             console.error("Failed to load image:", imageUrl);
-            toast.error("Failed to load image from URL.");
+            return;
           }
+
+          img.set({
+            left: position.left,
+            top: position.top,
+            scaleX: 0.5,
+            scaleY: 0.5,
+          });
+
+          img.set("crossOrigin", "anonymous"); // ✅ keep this
+          addDeleteControl(img, canvas);
+          canvas.add(img);
+          canvas.setActiveObject(img);
+          canvas.renderAll();
         },
         { crossOrigin: "anonymous" }
       );
@@ -850,6 +859,8 @@ export default function DesignPage() {
       toast.success("Designs saved to persist!");
     }, 1000);
   };
+
+
 
   if (productError) {
     return (
@@ -1177,7 +1188,6 @@ export default function DesignPage() {
                 okType="danger"
               >
                 <button
-                  
                   disabled={isProductLoading}
                   className={`p-2  ${
                     currentSide === "left"
