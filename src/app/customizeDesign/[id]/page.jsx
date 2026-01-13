@@ -327,12 +327,13 @@ console.log(frontTshirtUrl)
       editable: true,
       stroke: "black",
       strokeWidth: 0,
-      shadow: new fabric.Shadow({
-        color: "rgba(0,0,0,0)",
-        offsetX: 0,
-        offsetY: 0,
-        blur: 0,
-      }),
+     shadow: new fabric.Shadow({
+  color: "#00000000", 
+  offsetX: 0,
+  offsetY: 0,
+  blur: 0,
+}),
+
     });
 
     addDeleteControl(text, canvasInstance);
