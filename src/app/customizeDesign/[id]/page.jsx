@@ -1202,7 +1202,7 @@ console.log(frontTshirtUrl)
           )}
         </div>
 
-        <h1 className="text-center bg-green-500 p-1">Freview</h1>
+        <h1 className="text-center bg-green-500 p-1">Preview</h1>
         <div className="grid grid-cols-2 gap-2">
           {previews[selectedColorIndex]?.front && (
             <div className="border ">
