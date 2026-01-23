@@ -30,7 +30,7 @@ const Banner = () => {
       >
         {couponData?.data?.map((item) => (
           <SplideSlide key={item._id}>
-            <div className="relative w-full h-[500px] md:h-[600px]">
+            <div className="relative w-full  lg:h-[70vh]">
               {/* Background Image */}
               {/* Background Image */}
               <Image
@@ -38,7 +38,7 @@ const Banner = () => {
                 alt={item.name}
                 width={1000}
                 height={500}
-                className="w-full h-[500px] md:h-[600px] object-cover"
+                className="w-full  lg:h-[70vh] object-cover"
               />
 
               <div className="absolute inset-0 bg-black/50" />

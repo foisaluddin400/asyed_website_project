@@ -24,6 +24,19 @@ body {
 
 
 
+
+.jodit-content table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+.jodit-content iframe {
+  max-width: 100%;
+}
+
+
+
 li{
   list-style: none;
 }

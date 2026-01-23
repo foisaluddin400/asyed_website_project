@@ -52,16 +52,21 @@ const Hero = () => {
         >
           {bannerData?.data?.map((banner) => (
             <SplideSlide key={banner._id}>
-              <div className="relative h-[70vh] w-full flex items-center">
+              <div className="relative w-full  lg:h-[80vh] flex items-center">
                 {/* Left Text */}
-                <div className="absolute left-10 md:left-20 top-1/2 transform -translate-y-1/2 z-10 max-w-xl text-white space-y-4">
+                <div className="absolute left-6 md:left-20 top-1/2 -translate-y-1/2 z-10 max-w-xl text-white space-y-4">
                   <span className="inline-block bg-primary px-4 py-1 text-sm rounded">
                     NEW ARRIVAL
                   </span>
-                  <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+
+                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
                     {banner.title}
                   </h1>
-                  <p className="text-lg opacity-90">{banner.description}</p>
+
+                  <p className="text-base md:text-lg opacity-90">
+                    {banner.description}
+                  </p>
+
                   <Link href="/allProduct">
                     <button className="mt-4 bg-primary hover:bg-red-600 transition px-8 py-3 rounded font-medium">
                       GET SHOP →
@@ -74,11 +79,11 @@ const Hero = () => {
                   <Image
                     src={`${imageUrl}${banner.image}`}
                     alt={banner.title}
-                    fill
-                    priority
-                    className="w-full object-cover h-[70vh]"
+                  width={1000}
+                height={500}
+                    className="object-cover w-full lg:h-[80vh]"
                   />
-                  <div className="absolute inset-0 bg-black/40" />
+                  <div className="absolute inset-0 bg-black/10" />
                 </div>
               </div>
             </SplideSlide>
@@ -88,10 +93,26 @@ const Hero = () => {
 
       {/* Bottom Feature Section */}
       <div className="mt-16 grid md:grid-cols-4 gap-8 border p-5">
-        <Feature icon={<Package />} title="FAST DELIVERY" desc="Delivery in 24/H" />
-        <Feature icon={<RotateCcw />} title="24 HOURS RETURN" desc="Money-back guarantee" />
-        <Feature icon={<Shield />} title="SECURE PAYMENT" desc="100% safe payment" />
-        <Feature icon={<Headphones />} title="SUPPORT 24/7" desc="Live chat support" />
+        <Feature
+          icon={<Package />}
+          title="FAST DELIVERY"
+          desc="Delivery in 24/H"
+        />
+        <Feature
+          icon={<RotateCcw />}
+          title="24 HOURS RETURN"
+          desc="Money-back guarantee"
+        />
+        <Feature
+          icon={<Shield />}
+          title="SECURE PAYMENT"
+          desc="100% safe payment"
+        />
+        <Feature
+          icon={<Headphones />}
+          title="SUPPORT 24/7"
+          desc="Live chat support"
+        />
       </div>
     </div>
   );
