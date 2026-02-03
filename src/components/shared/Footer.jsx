@@ -5,7 +5,7 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "luc
 import { MarkIcon } from "./Image";
 import { useGetContactQuery } from "@/redux/Api/metaApi";
 
-// Reusable Social Icon Componentf
+// Reusable Social Icon Componentfd
 const SocialIcon = ({ href, icon: Icon }) => (
   <Link
     href={href}
